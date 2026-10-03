@@ -1,0 +1,453 @@
+{
+  "upstreamCommit": "60423441a71dd4eead5a026a4cff93fbd4c6f4f3",
+  "artifacts": [
+    {
+      "path": "contracts/deployments/base/MarketFactory.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/MarketFactory.json",
+      "sha256": "9a724c5ca0ec5887c9af41a4b57e5dadf3018919ef2d3bc8730dbca18dbbc1e9",
+      "address": "0x886Ef0A78faBbAE942F1dA1791A8ed02a5aF8BC6",
+      "deploymentTransaction": "0x3321e66866c3889d3fce2c9e09c87083787bb38b72cdc41d323ed0442941c774",
+      "solcInputHash": "1956f874b7d1788e92cca2a771e1af4e",
+      "runtimeBytes": 9890,
+      "runtimeSha256": "dc4ea981cafe9a0ef5e636172cbcf0fa38d4c12ffac21ff09aacb9071c7b2610",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": 9890,
+      "constructorWordPatches": [
+        {
+          "offset": 223,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 291,
+          "value": "302400"
+        },
+        {
+          "offset": 351,
+          "value": "1453204808707494546913557277832757355295468570290"
+        },
+        {
+          "offset": 430,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 469,
+          "value": "519390166007602677673586549421110993475019929870"
+        },
+        {
+          "offset": 527,
+          "value": "1137147364719186259524475001429217465916511537822"
+        },
+        {
+          "offset": 604,
+          "value": "505021184346817517011532817502949376119344023162"
+        },
+        {
+          "offset": 643,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 3182,
+          "value": "1137147364719186259524475001429217465916511537822"
+        },
+        {
+          "offset": 3266,
+          "value": "1453204808707494546913557277832757355295468570290"
+        },
+        {
+          "offset": 3748,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 4642,
+          "value": "519390166007602677673586549421110993475019929870"
+        },
+        {
+          "offset": 4698,
+          "value": "302400"
+        },
+        {
+          "offset": 4747,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 4861,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 5019,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 5068,
+          "value": "519390166007602677673586549421110993475019929870"
+        },
+        {
+          "offset": 5102,
+          "value": "302400"
+        },
+        {
+          "offset": 5234,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5281,
+          "value": "1453204808707494546913557277832757355295468570290"
+        },
+        {
+          "offset": 5434,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5579,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5624,
+          "value": "1453204808707494546913557277832757355295468570290"
+        },
+        {
+          "offset": 5941,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 6079,
+          "value": "505021184346817517011532817502949376119344023162"
+        },
+        {
+          "offset": 6132,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 6529,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 6574,
+          "value": "978946639892599940449221383865787319818984785916"
+        }
+      ],
+      "constructorWordPatchedMatch": true
+    },
+    {
+      "path": "contracts/deployments/base/Market.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/Market.json",
+      "sha256": "7debb1c19219c70fdc9a5f2d07261cdd334abad706b38ed4661310427a507a3f",
+      "address": "0xC72f738e331b6B7A5d77661277074BB60Ca0Ca9E",
+      "deploymentTransaction": "0x2e9ea32f585c447ec87689fc24c4f1d53e07a1d231e9a386efae06bbfc903f75",
+      "solcInputHash": "a6bcf6ab1a3d3ab158a2dc1fd3dd7943",
+      "runtimeBytes": 4589,
+      "runtimeSha256": "de8b86dbba8cbdb28d3bc4a6e0cb8ce969305fb14bf01b36fe6bf66561666d54",
+      "exactRuntimeMatch": true,
+      "artifactRuntimeBytes": 4589,
+      "constructorWordPatches": [],
+      "constructorWordPatchedMatch": true
+    },
+    {
+      "path": "contracts/deployments/base/Router.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/Router.json",
+      "sha256": "822d6f58bdef019144719d56b7803deb7044f8aaef0cac6e76135f3c9164982f",
+      "address": "0x3124e97ebF4c9592A17d40E54623953Ff3c77a73",
+      "deploymentTransaction": "0xaa2900bb48dfaab8bc545229dae39f8a79337d16705754c9ded33073f2a7869f",
+      "solcInputHash": "1956f874b7d1788e92cca2a771e1af4e",
+      "runtimeBytes": 9646,
+      "runtimeSha256": "ee7ece4a71abf270a55e472dfff1121a27e5428d4277bf482c04bea4a53cacf2",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": 9646,
+      "constructorWordPatches": [
+        {
+          "offset": 240,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 325,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 596,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 811,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 1049,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 1182,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 2559,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 3022,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 3067,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 3211,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 3356,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 3611,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 3658,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 4562,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 4609,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 4803,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 4948,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5092,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5234,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5483,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 5523,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 6089,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 6286,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 6569,
+          "value": "1196483903349833411625794312885590875107654416287"
+        },
+        {
+          "offset": 6614,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 6756,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 6890,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 7187,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 7234,
+          "value": "1196483903349833411625794312885590875107654416287"
+        }
+      ],
+      "constructorWordPatchedMatch": true
+    },
+    {
+      "path": "contracts/deployments/base/RealityProxy.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/RealityProxy.json",
+      "sha256": "c53a81993caf2c32bbb7914d105564426af9fc3aab73ac69e897fa0df622e9a0",
+      "address": "0xfE8bF5140F00de6F75BAFa3Ca0f4ebf2084A46B2",
+      "deploymentTransaction": "0x7d0158ee5ea748d38a693e7d0d0f8001765a92d7cd2d535b8875283cc13336ed",
+      "solcInputHash": "a6bcf6ab1a3d3ab158a2dc1fd3dd7943",
+      "runtimeBytes": 3603,
+      "runtimeSha256": "a57f72a1aacd88a6a65d13f5109d8e8595ba5437dae97923f8a1903ea9f284cd",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": 3603,
+      "constructorWordPatches": [
+        {
+          "offset": 96,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 163,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 846,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 1210,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 1326,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 1776,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 1935,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 2393,
+          "value": "978946639892599940449221383865787319818984785916"
+        },
+        {
+          "offset": 2510,
+          "value": "269614998409368682144901917088164334464882663656"
+        },
+        {
+          "offset": 2923,
+          "value": "978946639892599940449221383865787319818984785916"
+        }
+      ],
+      "constructorWordPatchedMatch": true
+    },
+    {
+      "path": "contracts/deployments/base/Reality.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/Reality.json",
+      "sha256": "8f221eb3f115ce51f44ae59ced384bc03e68f26b350e8c666d252ba6f8388da1",
+      "address": "0x2F39f464d16402Ca3D8527dA89617b73DE2F60e8",
+      "deploymentTransaction": null,
+      "solcInputHash": null,
+      "runtimeBytes": 16917,
+      "runtimeSha256": "9643a715264fb6b0e4a50110f4db596341a00793aa320a092b9be68927f42092",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": null
+    },
+    {
+      "path": "contracts/deployments/base/ConditionalTokens.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/ConditionalTokens.json",
+      "sha256": "e359b95731b3a190c35b9977e92bd5ade4bbefebac02fd04116459410e679e35",
+      "address": "0xAb797C4C6022A401c31543E316D3cd04c67a87fC",
+      "deploymentTransaction": null,
+      "solcInputHash": null,
+      "runtimeBytes": 20670,
+      "runtimeSha256": "18d5223826a50fd9553c67126ce8f65054472fb0038412888c95f884bba49ea8",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": null
+    },
+    {
+      "path": "contracts/deployments/base/Wrapped1155Factory.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/Wrapped1155Factory.json",
+      "sha256": "cb88e6badd2148d08469d2fe80b9fea2c86e6c834fd256a95384d60c91303cc5",
+      "address": "0xd194319d1804c1051dd21ba1dc931ca72410b79f",
+      "deploymentTransaction": null,
+      "solcInputHash": null,
+      "runtimeBytes": 6755,
+      "runtimeSha256": "4c2ec499658878c594aa7c47d0c589b3e319488d667135727ddd01cf55ad02ea",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": null
+    },
+    {
+      "path": "contracts/deployments/base/RealitioHomeArbitrationProxy.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/RealitioHomeArbitrationProxy.json",
+      "sha256": "4d3164274a38f73754a145664786daea7210f1b11f1cab1eef851c947da78ca3",
+      "address": "0x5AFa42b30955f137e10f89dfb5EF1542a186F90e",
+      "deploymentTransaction": null,
+      "solcInputHash": null,
+      "runtimeBytes": 4577,
+      "runtimeSha256": "e6acf330b8d2f2d5e62cfcec5e0d42d6316d0c7472233eae867e6b9bfd1a4e3c",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": null
+    },
+    {
+      "path": "contracts/deployments/base/CollateralToken.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/base/CollateralToken.json",
+      "sha256": "a5be6fe1aa398be11318dacee59d1abfc237e7dec171f495272790e6c9d23dee",
+      "address": "0x5875eee11cf8398102fdad704c9e96607675467a",
+      "deploymentTransaction": null,
+      "solcInputHash": null,
+      "runtimeBytes": 170,
+      "runtimeSha256": "acb4a6031845e7fa8848b0eaf97fe68b0e87e05395a7f3db4d2ce0e1b3f783a9",
+      "exactRuntimeMatch": false,
+      "artifactRuntimeBytes": null
+    },
+    {
+      "path": "contracts/deployments/ethereum/RealitioForeignProxyBase.json",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/contracts/deployments/ethereum/RealitioForeignProxyBase.json",
+      "sha256": "3a02146e14cc16fe96cf8ceccb9ad8435478662cb7bb278a620e651c822cfd7a",
+      "address": "0x54811e1157ccc2be68ce4cc850e5ab3382fe627f",
+      "deploymentTransaction": null,
+      "solcInputHash": null
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/seer-pm-sdk/src/quote.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/packages/seer-pm-sdk/src/quote.ts",
+      "sha256": "c0d981bcc120f34b537e2c9562243c807f46eb7410b64a4aa5cefca7717c2d3f"
+    },
+    {
+      "path": "packages/seer-pm-sdk/src/quote-utils.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/packages/seer-pm-sdk/src/quote-utils.ts",
+      "sha256": "569fcccb4f95f0923db7bb945e27f404e9c225c9a75d36c16f6b49c73e4b00a5"
+    },
+    {
+      "path": "packages/seer-pm-sdk/src/psm3-composite-quote.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/packages/seer-pm-sdk/src/psm3-composite-quote.ts",
+      "sha256": "2ddccee32bbb41218c79d693ee97e44625610c4c8ee6119ffac24035cedf8df7"
+    },
+    {
+      "path": "web/src/hooks/useArbitrationCost.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/web/src/hooks/useArbitrationCost.ts",
+      "sha256": "2e8355f13badef0dea8ca4d8111cb17b98f65b95e2a7409a2e93fead500b21f2"
+    },
+    {
+      "path": "packages/seer-pm-sdk/src/psm3.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/packages/seer-pm-sdk/src/psm3.ts",
+      "sha256": "2724ff1fd57f59b841d9aa84b4d42b0ec9ed21139dfc187a6bd720a26a876dbb"
+    },
+    {
+      "path": "packages/seer-pm-sdk/src/psm3-abi.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/packages/seer-pm-sdk/src/psm3-abi.ts",
+      "sha256": "6fe1e2f6cebf565f712c9dea5a7b1d75dfbc1a8578e46a35d39440c0cb363057"
+    },
+    {
+      "path": "packages/seer-pm-sdk/src/amm-trade.ts",
+      "url": "https://raw.githubusercontent.com/seer-pm/demo/60423441a71dd4eead5a026a4cff93fbd4c6f4f3/packages/seer-pm-sdk/src/amm-trade.ts",
+      "sha256": "8daaf8a066ebf42abea4debdcb6701db26beb977f8e1e5ac11eeb516511de066"
+    }
+  ],
+  "homeGetters": {
+    "foreignProxy()": "0x00000000000000000000000054811e1157ccc2be68ce4cc850e5ab3382fe627f",
+    "foreignChainId()": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "realitio()": "0x0000000000000000000000002f39f464d16402ca3d8527da89617b73de2f60e8",
+    "amb()": "{'code': 3, 'message': 'execution reverted', 'data': '0x'}",
+    "owner()": "{'code': 3, 'message': 'execution reverted', 'data': '0x'}",
+    "messenger()": "0x0000000000000000000000004200000000000000000000000000000000000007"
+  },
+  "questionFee": 0,
+  "collateral": {
+    "asset()": "{'code': 3, 'message': 'execution reverted', 'data': '0x'}",
+    "convertToAssets(uint256)": "{'code': 3, 'message': 'execution reverted', 'data': '0x'}",
+    "previewDeposit(uint256)": "{'code': 3, 'message': 'execution reverted', 'data': '0x'}",
+    "symbol()": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000057355534453000000000000000000000000000000000000000000000000000000",
+    "decimals()": "0x0000000000000000000000000000000000000000000000000000000000000012"
+  }
+}
