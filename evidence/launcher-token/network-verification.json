@@ -1,0 +1,106 @@
+{
+  "observed_at": "2026-10-05T10:14:42.727543+00:00",
+  "transport": "curl",
+  "prior_attempt": "Python urllib returned HTTP 403; curl used successfully",
+  "networks": [
+    {
+      "name": "Base Mainnet",
+      "rpc": "https://mainnet.base.org",
+      "explorer": "https://basescan.org",
+      "responses": {
+        "eth_chainId": {
+          "jsonrpc": "2.0",
+          "result": "0x2105",
+          "id": 1
+        },
+        "latest": {
+          "jsonrpc": "2.0",
+          "result": {
+            "number": "0x31c8dd8",
+            "hash": "0xd1352c3abd515477bb2147d28b557203e7685830cf0f15dad54c34a021843f07",
+            "parentHash": "0x2a45890c2a39d1b8de21d45b64f5ff7c526099ad0197f9a387c7c0cbd0a1ce0b",
+            "timestamp": "0x6ac37893"
+          },
+          "id": 2
+        },
+        "safe": {
+          "jsonrpc": "2.0",
+          "result": {
+            "number": "0x31c8dcf",
+            "hash": "0xe135f688deff29e0a5fe04d364eb3eef6c0cb16719e1b76c7a22b94223598b19",
+            "parentHash": "0xb5f3d5e84e5316bc43c42eba8657d979a2e1e83712c3276e4e9bc9bf3cc8e6db",
+            "timestamp": "0x6ac37881"
+          },
+          "id": 3
+        },
+        "finalized": {
+          "jsonrpc": "2.0",
+          "result": {
+            "number": "0x31c8bf7",
+            "hash": "0xf05836ea59488a8149b1c877547cc66df0213740348c9c77b75775c77eee9122",
+            "parentHash": "0xb2a14595e21967dbcb3a2b8ff9063d31f801492976495a60ec9df2630c4ae169",
+            "timestamp": "0x6ac374d1"
+          },
+          "id": 4
+        }
+      },
+      "explorer_check": {
+        "url": "https://basescan.org/block/52202487",
+        "block_hash_present": true,
+        "curl_exit": 0,
+        "response_length": 102188,
+        "error": ""
+      }
+    },
+    {
+      "name": "Base Sepolia",
+      "rpc": "https://sepolia.base.org",
+      "explorer": "https://sepolia.basescan.org",
+      "responses": {
+        "eth_chainId": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": "0x14a34"
+        },
+        "latest": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "result": {
+            "number": "0x2d80cda",
+            "hash": "0xd59c761f6229d8e1875b11c41dc119d1ce7a52b458319418a3bee46bbb1a9222",
+            "parentHash": "0x7b893524fe217bc12fe946cac98be460068eef9378922a653c587b4ae315cb9a",
+            "timestamp": "0x6ac37894"
+          }
+        },
+        "safe": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "result": {
+            "number": "0x2d80c9e",
+            "hash": "0xed00c451420cd4302e07d78e1d8ec7a72f0272c8083d8c5fa560024096c128d1",
+            "parentHash": "0x55ca8b6e272852c4af648ded367d6fefc2b1087d062fe1d07de66c10fb0dee33",
+            "timestamp": "0x6ac3781c"
+          }
+        },
+        "finalized": {
+          "jsonrpc": "2.0",
+          "id": 4,
+          "result": {
+            "number": "0x2d80a72",
+            "hash": "0xd56ec617d6030b8d4b935b28f02aac05a86afd1367e210740182a72a2deb75aa",
+            "parentHash": "0x73a20a12cb0fad366afd7b82c8e0d2833d8c22e99cdb6f12a2861a5ba7268f0a",
+            "timestamp": "0x6ac373c4"
+          }
+        }
+      },
+      "explorer_check": {
+        "url": "https://sepolia.basescan.org/block/47712882",
+        "block_hash_present": true,
+        "curl_exit": 0,
+        "response_length": 90464,
+        "error": ""
+      }
+    }
+  ],
+  "capture_note": "Block responses retain number, hash, parentHash and timestamp; unrelated payload fields omitted."
+}
