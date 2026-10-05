@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-05T16:24:26.509345+00:00",
+  "label": "com.whatelse.launcher-neon-backup",
+  "installed": true,
+  "daily_local_time": "03:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "last_exit_code": 0,
+  "retention_days": 7,
+  "destination": ".scratch/hosting/backups",
+  "operator": "MrSufferer",
+  "requires": [
+    "logged-in Mac",
+    "running Docker"
+  ],
+  "last_backup_checked_at": "2026-10-05T16:24:13.817350+00:00"
+}
