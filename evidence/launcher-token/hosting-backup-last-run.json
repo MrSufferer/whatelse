@@ -1,0 +1,9 @@
+{
+  "checked_at": "2026-10-05T16:24:13.817350+00:00",
+  "backup_created": true,
+  "backup_bytes": 897,
+  "destination": ".scratch/hosting/backups",
+  "retention_days": 7,
+  "owner": "MrSufferer",
+  "separate_database_restore_verified": false
+}

@@ -1,0 +1,36 @@
+{
+  "owner_id": "tea-cspsq3ggph6c73f4ln6g",
+  "operator": "MrSufferer",
+  "services": [
+    {
+      "id": "srv-db1sqc942hec73e4iqo0",
+      "name": "launcher-beta-api",
+      "plan": "free",
+      "region": "singapore",
+      "root_dir": "services/launcher-api",
+      "url": "https://launcher-beta-api.onrender.com",
+      "suspended": true,
+      "auto_deploy": "off",
+      "deployment_states": [
+        "canceled"
+      ],
+      "private_secret_group_linked": true
+    },
+    {
+      "id": "srv-db1sqe3ncjis73c7ajtg",
+      "name": "launcher-beta-frontend",
+      "plan": "free",
+      "region": "singapore",
+      "root_dir": "packages/nextjs",
+      "url": "https://launcher-beta-frontend.onrender.com",
+      "suspended": true,
+      "auto_deploy": "off",
+      "deployment_states": [
+        "canceled"
+      ],
+      "server_session_secrets_configured": true
+    }
+  ],
+  "application_deployed": false,
+  "private_env_group_id": "evg-db1soa7avr4c73dd2mn0"
+}
