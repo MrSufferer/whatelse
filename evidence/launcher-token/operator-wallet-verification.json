@@ -1,0 +1,13 @@
+{
+  "ticket": "https://github.com/MrSufferer/whatelse/issues/29",
+  "verifiedAt": "2026-10-08T10:08:17.232Z",
+  "method": "EIP-191 personal_sign; ethers.verifyMessage",
+  "verifierVersion": "6.17.0",
+  "address": "0xeD37FD0d6F0f69236E7472B36796e133D20EcC32",
+  "message": "Launcher Token Launchpad — wallet control verification\nRepository: MrSufferer/whatelse\nTicket: Confirm operator identities and beta admission (29)\nWallet: 0xeD37FD0d6F0f69236E7472B36796e133D20EcC32\nScope: Base Sepolia test identities only (chain 84532).\nThis proves wallet control only. It authorizes no transactions,\nasset transfers, approvals, deployment, or spending.\nChallenge: 29-20261008-72f04db1-e509-4692-b06f-825b03419ad8",
+  "signature": "0xb196dd46537654e880a5174d2b4aa824fc4edc5675ce124c67a7b38d564668a4368cbfccdf790a0f2ea048f1ba8cd52bb185a679557d82ec9b0fdfdb72aac3891b",
+  "messageDigest": "0x10aae007215533fbbfab758609ccff238a4d3e044744b3b80cf7a73ce27db071",
+  "recoveredAddress": "0xeD37FD0d6F0f69236E7472B36796e133D20EcC32",
+  "matches": true,
+  "scope": "Historical proof of control for test identities only; not a reusable login credential or transaction authorization"
+}
