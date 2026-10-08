@@ -52,5 +52,30 @@
       "screenshot": "revoked-mobile.png",
       "limitation": "Proposal already consumed by successful block 7 creation; disabled UI has overlapping consumed/revoked reasons. Earlier block 4\u21925 race and contract tests independently isolate revocation rejection."
     }
+  },
+  "isolatedRun2": {
+    "provenance": "local-anvil-run2.json",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "approvedWalletInitiallyEnabled": true,
+    "unauthorizedAccount1Disabled": true,
+    "restoredApprovedAccount0EnabledBeforeRevocation": true,
+    "tokenCountBeforeAndAfterRevocation": "0",
+    "approvedAfterRevocation": false,
+    "revokedAccount0Disabled": true,
+    "keyboard": "Focus Symbol, Tab eight times, Enter; remains /create",
+    "walletSendTransactionsBeforeAndAfterKeyboard": [
+      0,
+      0
+    ],
+    "horizontalOverflow": false,
+    "screenshots": [
+      "run2-unauthorized-mobile.png",
+      "run2-revoked-mobile.png"
+    ],
+    "browserErrors": 0,
+    "browserWarnings": 2
   }
 }
