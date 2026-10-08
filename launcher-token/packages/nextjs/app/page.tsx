@@ -1,74 +1,77 @@
 "use client";
-
 import Link from "next/link";
 import { Address } from "@scaffold-ui/components";
-import type { NextPage } from "next";
-import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { configured, network } from "~~/utils/launcher/config";
 
-const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-  const { targetNetwork } = useTargetNetwork();
-
+function LaunchRow({ index }: { index: bigint }) {
+  const { data } = useScaffoldReadContract({ contractName: "TokenFactory", functionName: "tokenAt", args: [index] });
   return (
-    <>
-      <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} chain={targetNetwork} />
-          </div>
-
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
-
-        <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
-            <div className="flex flex-col bg-base-100 border border-base-300 px-10 py-10 text-center items-center max-w-xs">
-              <BugAntIcon className="h-8 w-8" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 border border-base-300 px-10 py-10 text-center items-center max-w-xs">
-              <MagnifyingGlassIcon className="h-8 w-8" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <div className="discovery-row">
+      <span>Registered Launcher Token</span>
+      {data ? (
+        <>
+          <Address address={data} />
+          <Link href={`/token/${network.id}/${data}`}>Open token detail</Link>
+        </>
+      ) : (
+        <span>Reading token…</span>
+      )}
+    </div>
   );
-};
-
-export default Home;
+}
+export default function Explore() {
+  const {
+    data: count,
+    isLoading,
+    isError,
+    refetch,
+  } = useScaffoldReadContract({
+    contractName: "TokenFactory",
+    functionName: "tokenCount",
+    query: { enabled: configured },
+  });
+  return (
+    <div className="launcher-page">
+      <p className="eyebrow">Controlled beta / {network.name}</p>
+      <h1>Communities, at the start.</h1>
+      <p className="lead">
+        Discover reviewed Launcher Tokens. This application currently verifies creation of fictional zero-supply test
+        fixtures.
+      </p>
+      <Link className="btn btn-primary" href="/create">
+        Review a Launch
+      </Link>
+      <section className="discovery">
+        <h2>Registered launches</h2>
+        {!configured ? (
+          <p>Registry unconfigured. No deployment has been recorded for this network.</p>
+        ) : isLoading ? (
+          <p role="status">Reading registry…</p>
+        ) : isError || count === undefined ? (
+          <p role="alert">
+            Registry unavailable.{" "}
+            <button className="btn" onClick={() => refetch()}>
+              Retry
+            </button>
+          </p>
+        ) : count === 0n ? (
+          <p>
+            No launches registered yet. <Link href="/create">Review the approved fictional proposal</Link>.
+          </p>
+        ) : (
+          <>
+            {Array.from({ length: Number(count > 100n ? 100n : count) }, (_, i) => (
+              <LaunchRow key={i} index={BigInt(i)} />
+            ))}
+            {count > 100n && <p>Showing the first 100 registered launches.</p>}
+          </>
+        )}
+      </section>
+      <p>
+        Participant authentication and invitation management are unavailable in this creation test interface. Connecting
+        a wallet proves no authenticated beta session or platform endorsement.
+      </p>
+    </div>
+  );
+}

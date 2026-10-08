@@ -118,3 +118,223 @@
 .link:hover {
   opacity: 80%;
 }
+
+:root {
+  --launcher-bg: #101313;
+  --launcher-surface: #181c1b;
+  --launcher-text: #eff4f0;
+  --launcher-mint: #a2f5bc;
+  --launcher-muted: #b7c4bc;
+  --launcher-border: #3b4841;
+}
+body {
+  background: var(--launcher-bg);
+  color: var(--launcher-text);
+}
+.launcher-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem 4%;
+  border-bottom: 1px solid var(--launcher-border);
+  flex-wrap: wrap;
+}
+.launcher-wordmark {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-right: auto;
+}
+.launcher-wordmark span {
+  color: var(--launcher-muted);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+.launcher-nav nav {
+  display: flex;
+  gap: 1.5rem;
+}
+.launcher-nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.launcher-page {
+  width: min(1200px, 92%);
+  margin: 3.5rem auto;
+}
+.launcher-page h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin: 1rem 0 1.5rem;
+}
+.launcher-page h2 {
+  font-family: Georgia, serif;
+  font-size: 1.6rem;
+  margin: 0 0 1.5rem;
+}
+.launcher-page p {
+  line-height: 1.65;
+  margin: 1rem 0;
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--launcher-mint);
+}
+.lead {
+  max-width: 680px;
+  font-size: 1.1rem;
+  color: var(--launcher-muted);
+}
+.launcher-spread {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 2rem;
+  margin: 3rem 0;
+}
+.economics,
+.launch-form,
+.discovery,
+.activity {
+  border-top: 1px solid var(--launcher-border);
+  padding-top: 1.5rem;
+}
+.launch-form {
+  background: var(--launcher-surface);
+  padding: 1.5rem;
+  align-self: start;
+}
+.launch-form label {
+  display: block;
+  margin: 1.5rem 0 0.5rem;
+}
+.launch-form .input {
+  display: block;
+  width: 100%;
+  border-radius: 0;
+  background: var(--launcher-bg);
+  color: var(--launcher-text);
+  border-color: var(--launcher-border);
+}
+.launcher-page .btn {
+  border-radius: 0;
+  min-height: 44px;
+  height: auto;
+  padding: 0.75rem 1rem;
+  white-space: normal;
+}
+.launcher-page .btn-primary {
+  background: var(--launcher-mint);
+  color: var(--launcher-bg);
+  border-color: var(--launcher-mint);
+}
+.launcher-page .btn:disabled {
+  background: #303b35;
+  color: #b7c4bc;
+  border-color: #58645d;
+}
+.economics dl > div,
+.token-stats > div {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--launcher-border);
+}
+dt {
+  color: var(--launcher-muted);
+}
+dd,
+.numeric {
+  font-variant-numeric: tabular-nums;
+  font-family: monospace;
+}
+dd {
+  text-align: right;
+}
+.discovery {
+  margin-top: 3rem;
+}
+.discovery-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--launcher-border);
+  padding: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.launcher-page a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.tx-hash {
+  overflow-wrap: anywhere;
+}
+.launcher-footer {
+  border-top: 1px solid var(--launcher-border);
+  color: var(--launcher-muted);
+  padding: 1.5rem 4%;
+}
+.curve {
+  width: 100%;
+  height: auto;
+  background: var(--launcher-surface);
+}
+.curve text {
+  fill: var(--launcher-muted);
+  font: 12px monospace;
+}
+.token-stats {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.activity {
+  margin-bottom: 3rem;
+  overflow: auto;
+}
+:focus-visible {
+  outline: 2px solid var(--launcher-mint);
+  outline-offset: 4px;
+}
+@media (max-width: 900px) {
+  .launcher-spread {
+    grid-template-columns: 1fr;
+  }
+  .launcher-nav {
+    gap: 1rem;
+  }
+  .launcher-page {
+    margin: 2rem auto;
+  }
+  .economics dl > div {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .launcher-page {
+    animation: launcher-enter 180ms ease-out;
+  }
+  @keyframes launcher-enter {
+    from {
+      opacity: 0.7;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+.launcher-spread > * {
+  min-width: 0;
+}
+.transaction-status {
+  overflow-wrap: anywhere;
+}

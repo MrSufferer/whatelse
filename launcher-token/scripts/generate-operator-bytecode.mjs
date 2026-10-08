@@ -15,5 +15,5 @@ writeFileSync(
     "../packages/nextjs/utils/launcher/operatorBytecode.ts",
     import.meta.url,
   ),
-  `// Generated from Foundry TokenFactory.json. Regenerate after any contract change.\nexport const operatorFactoryBytecode = "${artifact.bytecode.object}" as const;\n`,
+  `// Generated from Foundry TokenFactory.json. Regenerate after any contract change.\nexport const operatorFactoryBytecode =\n  "${artifact.bytecode.object}" as const;\n`,
 );

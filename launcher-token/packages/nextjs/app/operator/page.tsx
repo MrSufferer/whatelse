@@ -65,6 +65,8 @@ export default function OperatorPage() {
       const { client } = await verify();
       if (step !== "deploy") {
         if (!isAddress(factory)) throw new Error("Enter the factory from its successful deployment receipt.");
+        // This address comes from a just-deployed receipt before static Scaffold configuration exists.
+        // Network-bound reads recheck live owner/recipient permissions immediately before signing.
         const owner = await client.readContract({ address: factory, abi: tokenFactoryAbi, functionName: "owner" });
         const recipient = await client.readContract({
           address: factory,
@@ -125,7 +127,15 @@ export default function OperatorPage() {
       const { wallet } = await verify();
       if (Date.now() - preview.time > 120000 || (preview.to && preview.to.toLowerCase() !== factory.toLowerCase()))
         throw new Error("Preview expired or factory changed. Prepare again.");
-      const { step: _, time: __, ...request } = preview;
+      const request = {
+        account: preview.account,
+        to: preview.to,
+        data: preview.data,
+        value: preview.value,
+        gas: preview.gas,
+        maxFeePerGas: preview.maxFeePerGas,
+        maxPriorityFeePerGas: preview.maxPriorityFeePerGas,
+      };
       await transact(() => wallet.sendTransaction({ ...request, chain: baseSepolia }), {
         onBlockConfirmation: receipt => {
           setReceipts(previous => [...previous, receipt]);
