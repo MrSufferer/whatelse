@@ -66,7 +66,7 @@ export default function OperatorPage() {
       if (step !== "deploy") {
         if (!isAddress(factory)) throw new Error("Enter the factory from its successful deployment receipt.");
         // This address comes from a just-deployed receipt before static Scaffold configuration exists.
-        // Network-bound reads recheck live owner/recipient permissions immediately before signing.
+        // Network-bound reads verify live owner/recipient permissions while preparing the transaction.
         const owner = await client.readContract({ address: factory, abi: tokenFactoryAbi, functionName: "owner" });
         const recipient = await client.readContract({
           address: factory,
