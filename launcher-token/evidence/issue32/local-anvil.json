@@ -1,0 +1,97 @@
+{
+  "network": "Anvil (ephemeral test only)",
+  "chainId": 31337,
+  "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "factory": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "deployment": {
+    "hash": "0x131cbc7dcdd31f6b73775a922c04b1b93c76f084258daaa97833fba9305b003d",
+    "block": "1",
+    "blockHash": "0x17c3e6702868615ae66f66e0328a001459abfb5ea7d930f9fea61a25bb1851ef",
+    "status": "success"
+  },
+  "approvals": [
+    {
+      "functionName": "setLauncherApproval",
+      "hash": "0x947895704faacabe81c65e17c110d8fa4e0162d85c63977cf9b9f7b6318d3226",
+      "block": "2",
+      "blockHash": "0x04349961a5fa95028b1580fa6596da7f1c53f284f172564368b9048fb88ac7a2",
+      "status": "success"
+    },
+    {
+      "functionName": "reviewProposal",
+      "hash": "0x1ce8fc1b1ea8ca8f1ed441f4d99d8b7e07d5364f0712253d8875d0f7d538eca6",
+      "block": "3",
+      "blockHash": "0xd2e08adbaa1a064ab6a4173dc65535e890ce2a52ec7e7ae7313e2db2238049d3",
+      "status": "success"
+    }
+  ],
+  "execution": [
+    {
+      "hash": "0xed63c2998fe43cc270d3a43a896136e8cf9c8e0b7351e1518013091824c789d0",
+      "block": "4",
+      "blockHash": "0xefad85d747af79c3b78d20aa7060ae380f77371d7f87ddaac50753cf4a2be83b",
+      "status": "success",
+      "events": [
+        {
+          "eventName": "LauncherApproval",
+          "args": {
+            "launcher": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "approved": false,
+            "timestamp": "1791455224",
+            "reason": "Local test revocation race"
+          }
+        }
+      ]
+    },
+    {
+      "hash": "0xaf5cdb7381a426b6cf4dcde74849b8ed7366d626adb0600c749b406f222b46d6",
+      "block": "5",
+      "blockHash": "0xa0a912ba05d8ed11f1fd8fafa26ffd1ad3f36a68adceb1d54b5ac5fc4bdb53a4",
+      "status": "reverted",
+      "events": []
+    },
+    {
+      "hash": "0x66286399c6a8327f9ff1188431c6ec42195df1b73269b8a8b931b096a6dd0e60",
+      "block": "6",
+      "blockHash": "0xe4e3540a367ccb57f17819eaaac1f31495ae760b2531a8ef404c5e32b528a5c3",
+      "status": "success",
+      "events": [
+        {
+          "eventName": "LauncherApproval",
+          "args": {
+            "launcher": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "actor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "approved": true,
+            "timestamp": "1791455247",
+            "reason": "Reapprove local keyboard flow"
+          }
+        }
+      ]
+    },
+    {
+      "hash": "0xc277d4afd466e66359678fbc9c6d3e813b48e56bd1ff7c3bc010bc96250e0870",
+      "block": "7",
+      "blockHash": "0x02f01f1e5aadf4b23d3bb4b180db1f7cb71076dced7a176e902b52608d59f349",
+      "status": "success",
+      "events": [
+        {
+          "eventName": "TokenCreated",
+          "args": {
+            "token": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+            "launcher": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "proposal": "0xc9279702d1715013acb666f1dfb2285033f06eb34683f09078df500c5222667d",
+            "revision": "0x648e825616debd73f1dc139a46d945262009649c5756491655b6cf17248bc69b",
+            "launcherRecipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "platformRecipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "preset": "0x1bd5dd0ea941f87487111b2737bb4c26fc3a30aaa16ff5bd123fb4c17faa2a6b",
+            "chainId": "31337"
+          }
+        }
+      ]
+    }
+  ],
+  "token": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+  "creationOnly": true,
+  "liveBaseSepoliaDeployment": null
+}

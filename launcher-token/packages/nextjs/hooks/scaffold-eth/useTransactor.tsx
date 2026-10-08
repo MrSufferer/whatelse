@@ -55,7 +55,7 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
     try {
       chainId = await walletClient.getChainId();
       // Get full transaction from public client
-      const publicClient = getPublicClient(wagmiConfig);
+      const publicClient = getPublicClient(wagmiConfig, { chainId: chainId as AllowedChainIds });
 
       notificationId = notification.loading(<TxnNotification message="Awaiting for user confirmation" />);
       if (typeof tx === "function") {
@@ -84,7 +84,10 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       if (transactionReceipt.status === "reverted") throw new Error("Transaction reverted");
 
       notification.success(
-        <TxnNotification message="Transaction completed successfully!" blockExplorerLink={blockExplorerTxURL} />,
+        <TxnNotification
+          message="Transaction included. Finality has not been verified."
+          blockExplorerLink={blockExplorerTxURL}
+        />,
         {
           icon: "🎉",
         },

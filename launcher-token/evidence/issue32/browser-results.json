@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-08",
+  "browser": "Chromium, Playwright CLI",
+  "walletBoundary": "Injected EIP-6963/EIP-1193 provider, real local Anvil RPC, ephemeral unlocked account; not MetaMask",
+  "connected": true,
+  "chainMismatchWriteDisabled": true,
+  "cancelledSigningStayedOnCreate": true,
+  "cancelledSigningPreservedNameAndSymbol": true,
+  "genuineRevokedApprovalRaceReceipt": { "block": 5, "status": "reverted", "visibleMessage": "Creation not completed: Transaction reverted", "stayedOnCreate": true },
+  "reapprovedKeyboardTabEnterCreation": { "block": 7, "status": "success", "token": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be", "zeroSupplyVisible": true },
+  "detailReloadFromRegistry": true,
+  "receiptIdentityResetOnRemovedTx": true,
+  "noHorizontalOverflowWidths": [375, 390, 768, 1280],
+  "browserDiscoveredCorrections": ["long SDK rejection caused mobile overflow; parsed errors and min-width corrected", "Address component div nested in paragraph caused hydration warning; corrected to div identity wrapper"],
+  "finalReloadConsoleErrors": 0,
+  "baseSepoliaDeployed": false
+}
