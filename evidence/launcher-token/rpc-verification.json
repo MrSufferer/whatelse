@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-10-08T10:05:29.515425+00:00",
+  "status": "passed",
+  "networks": [
+    {
+      "network": "Base Sepolia",
+      "chain_id": 84532,
+      "configuration": "BASE_RPC_URL",
+      "blocks": {
+        "latest": {
+          "number": "0x2da0600",
+          "hash": "0x29151469b348200a364e7e01065e9c561efe6af69392596d64bd1d3e14c1892e",
+          "parentHash": "0xa7438a23d570f8b7639bb8f789bf2e2061c330eda69dbb5bb6178d9cd7c69532",
+          "timestamp": "0x6ac76ae0"
+        },
+        "safe": {
+          "number": "0x2da05d2",
+          "hash": "0x240cdd6eb5f68d0bc8a9e85b814ea9aa9fb0fd7919821bff84769759df0667c0",
+          "parentHash": "0x8fe3672f36b74af75e93398591a3bccb36e66bfaf13c242d36d49ea6699ad5be",
+          "timestamp": "0x6ac76a84"
+        },
+        "finalized": {
+          "number": "0x2da0438",
+          "hash": "0xe86bbd20bbced5bf8c2cb125612fb65b20ba88ce8f9ae71e145a7f8f19b11640",
+          "parentHash": "0x4e785d4262d4bec556007b501f754f4b8af949bf515717991d61829fb0bc55ea",
+          "timestamp": "0x6ac76750"
+        }
+      },
+      "contract": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "bytecode_bytes": 2041,
+        "method": "decimals()",
+        "result": 18,
+        "block": "0x2da0438"
+      },
+      "historical_logs": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "from_block": "0x2da042f",
+        "to_block": "0x2da0438",
+        "block_count": 10,
+        "count": 3
+      },
+      "read_only": true
+    },
+    {
+      "network": "Base Mainnet",
+      "chain_id": 8453,
+      "configuration": "official public RPC",
+      "blocks": {
+        "latest": {
+          "number": "0x31e8702",
+          "hash": "0x7732d3684940f7deb6dd9a12172f1c272b98fc5aaeaed2a2486fa329c49b4664",
+          "parentHash": "0xd6590647471146ac7ac9065696fae44aba726e89d1974373194334aea34387fe",
+          "timestamp": "0x6ac76ae7"
+        },
+        "safe": {
+          "number": "0x31e86fd",
+          "hash": "0xfd5c423ab5bc3c7f434b84d79c3a775e7fc1534483284e9a2bdbb3b5a6494c56",
+          "parentHash": "0xf20c01f2dc1f2c33ae9979066e6adabfac1c48c25412ef2cd0c9538097d9dd36",
+          "timestamp": "0x6ac76add"
+        },
+        "finalized": {
+          "number": "0x31e84b0",
+          "hash": "0x61e6489564fc87d38cc9408a6978d1d51bec22e1a31e92670a7236d9c4fe61c0",
+          "parentHash": "0xce368fa72cc7a9d7dcd51eedea6fb4dbf8363d6cd12d24846b3d0fb9516cfdfb",
+          "timestamp": "0x6ac76643"
+        }
+      },
+      "contract": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "bytecode_bytes": 2041,
+        "method": "decimals()",
+        "result": 18,
+        "block": "0x31e84b0"
+      },
+      "historical_logs": {
+        "address": "0x4200000000000000000000000000000000000006",
+        "from_block": "0x31e84a7",
+        "to_block": "0x31e84b0",
+        "block_count": 10,
+        "count": 448
+      },
+      "read_only": true
+    }
+  ],
+  "availability": "Point-in-time reads only; no SLA or load test established."
+}
