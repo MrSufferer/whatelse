@@ -1,0 +1,56 @@
+{
+  "network": "Anvil (ephemeral test only)",
+  "chainId": 31337,
+  "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "factory": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "deployment": {
+    "hash": "0xfb1e57f4dc47d434464a98776cff9848de02d6cc16c851f966a4a8cd6f798dff",
+    "block": "1",
+    "blockHash": "0xe31927b0826adbd0091c8d1cbdebbac924f4d294212d23f37a9bb9582f7cce2f",
+    "status": "success"
+  },
+  "approvals": [
+    {
+      "functionName": "setLauncherApproval",
+      "hash": "0xbd9e174d8d36b027dca305d6a55373eaad0520cb65799e060af382146ce880ba",
+      "block": "2",
+      "blockHash": "0xcf9ff977fe45b80ecb35a92ee618dd86781c2598d58a0212612ad865bfaf981c",
+      "status": "success"
+    },
+    {
+      "functionName": "reviewProposal",
+      "hash": "0x7891e0868af4aec9c0e81874da6146e1009ddea509c46c0e5e550a9059a7546f",
+      "block": "3",
+      "blockHash": "0x33f9e07ed4767c1b57c3a68fb38afa994ed18dad09e4a12ad9a2c5dc66ab7185",
+      "status": "success"
+    }
+  ],
+  "run": "Independent fresh chain run2, addresses repeat deterministically; blocks/hashes distinct",
+  "tokenCountBeforeRevocation": "0",
+  "revocation": {
+    "hash": "0xb7c14fe88c57ed8cf176785c724b09cedac4615a463952a6f8c57621402ac31a",
+    "block": "4",
+    "blockHash": "0xcf7c89370053dc082fcebc89c2ca19e9eb496440d0c3a270a6bfa86f92341b00",
+    "status": "success",
+    "logs": [
+      {
+        "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "topics": [
+          "0x2d7a17e48d627895ec274634696ccedcdfb62bcc8f913aabc02dbf2efc576fae",
+          "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+          "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+        ],
+        "data": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ac772100000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000002552756e322069736f6c61746564207072652d6372656174696f6e207265766f636174696f6e000000000000000000000000000000000000000000000000000000",
+        "blockHash": "0xcf7c89370053dc082fcebc89c2ca19e9eb496440d0c3a270a6bfa86f92341b00",
+        "blockNumber": "4",
+        "blockTimestamp": "1791455760",
+        "transactionHash": "0xb7c14fe88c57ed8cf176785c724b09cedac4615a463952a6f8c57621402ac31a",
+        "transactionIndex": 0,
+        "logIndex": 0,
+        "removed": false
+      }
+    ]
+  },
+  "tokenCountAfterRevocation": "0",
+  "approvedAfterRevocation": false
+}
