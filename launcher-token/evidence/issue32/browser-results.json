@@ -6,12 +6,51 @@
   "chainMismatchWriteDisabled": true,
   "cancelledSigningStayedOnCreate": true,
   "cancelledSigningPreservedNameAndSymbol": true,
-  "genuineRevokedApprovalRaceReceipt": { "block": 5, "status": "reverted", "visibleMessage": "Creation not completed: Transaction reverted", "stayedOnCreate": true },
-  "reapprovedKeyboardTabEnterCreation": { "block": 7, "status": "success", "token": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be", "zeroSupplyVisible": true },
+  "genuineRevokedApprovalRaceReceipt": {
+    "block": 5,
+    "status": "reverted",
+    "visibleMessage": "Creation not completed: Transaction reverted",
+    "stayedOnCreate": true
+  },
+  "reapprovedKeyboardTabEnterCreation": {
+    "block": 7,
+    "status": "success",
+    "token": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+    "zeroSupplyVisible": true
+  },
   "detailReloadFromRegistry": true,
   "receiptIdentityResetOnRemovedTx": true,
-  "noHorizontalOverflowWidths": [375, 390, 768, 1280],
-  "browserDiscoveredCorrections": ["long SDK rejection caused mobile overflow; parsed errors and min-width corrected", "Address component div nested in paragraph caused hydration warning; corrected to div identity wrapper"],
+  "noHorizontalOverflowWidths": [
+    375,
+    390,
+    768,
+    1280
+  ],
+  "browserDiscoveredCorrections": [
+    "long SDK rejection caused mobile overflow; parsed errors and min-width corrected",
+    "Address component div nested in paragraph caused hydration warning; corrected to div identity wrapper"
+  ],
   "finalReloadConsoleErrors": 0,
-  "baseSepoliaDeployed": false
+  "baseSepoliaDeployed": false,
+  "followupMobileBoundaries": {
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "unauthorizedWallet": {
+      "accountIndex": 1,
+      "creationDisabled": true,
+      "horizontalOverflow": false,
+      "screenshot": "unauthorized-mobile.png"
+    },
+    "revokedLauncher": {
+      "accountIndex": 0,
+      "creationDisabled": true,
+      "transactionHash": "0x2bfb9b9ca5d1f92cf25de7f023070613e4dd721ea6e5c4700c702ad00ff6c706",
+      "block": 8,
+      "receiptStatus": "success",
+      "screenshot": "revoked-mobile.png",
+      "limitation": "Proposal already consumed by successful block 7 creation; disabled UI has overlapping consumed/revoked reasons. Earlier block 4\u21925 race and contract tests independently isolate revocation rejection."
+    }
+  }
 }
