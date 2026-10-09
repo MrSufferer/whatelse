@@ -2,13 +2,17 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { Address } from "@scaffold-ui/components";
+import { useQuery } from "@tanstack/react-query";
 import { decodeEventLog, formatUnits, isAddress, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 import { LauncherChart } from "~~/components/LauncherChart";
 import { LauncherEconomics } from "~~/components/LauncherEconomics";
+import { ProposalRecord } from "~~/components/ProposalRecord";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { launcherTokenAbi, tokenFactoryAbi } from "~~/utils/launcher/abis";
+import { betaApi } from "~~/utils/launcher/betaApi";
 import { configured, factoryAddress, network } from "~~/utils/launcher/config";
+import { type ReviewedProposal } from "~~/utils/launcher/proposal";
 
 export default function Detail() {
   const params = useParams<{ chain: string; address: string }>();
@@ -22,6 +26,12 @@ export default function Detail() {
     functionName: "proposalOf",
     args: [token],
     query: { enabled: configured && valid },
+  });
+  const disclosure = useQuery({
+    queryKey: ["disclosure", network.id, token],
+    queryFn: () => betaApi<ReviewedProposal>(`disclosure?token=${token}`),
+    enabled: configured && valid && !!proposal && !/^0x0+$/.test(proposal),
+    retry: false,
   });
   const [info, setInfo] = useState<{
     name: string;
@@ -151,7 +161,17 @@ export default function Detail() {
         <p role="status">{error || "Reading registered token…"}</p>
       ) : (
         <>
-          <p className="lead">{info.symbol} · Creation-only fictional test fixture</p>
+          <p className="lead">{info.symbol} · Creation-only test launch</p>
+          {disclosure.data && <ProposalRecord proposal={disclosure.data} />}
+          {disclosure.isLoading && <p role="status">Reading reviewed business disclosures…</p>}
+          {disclosure.error && (
+            <p role="alert">
+              Reviewed disclosures unavailable.{" "}
+              <button className="btn" onClick={() => disclosure.refetch()}>
+                Retry disclosures
+              </button>
+            </p>
+          )}
           <div className="token-identity">
             Identity: chain {network.id} / <Address address={token} />
           </div>

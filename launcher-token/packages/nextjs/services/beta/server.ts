@@ -1,4 +1,3 @@
-import { database } from "./database";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import {
   type Address,
@@ -12,6 +11,9 @@ import {
   stringToHex,
 } from "viem";
 import { createSiweMessage } from "viem/siwe";
+import { database } from "~~/services/beta/database";
+import { HttpError, fail } from "~~/services/beta/errors";
+import { verifyReceipt } from "~~/services/beta/receipts";
 import { tokenFactoryAbi } from "~~/utils/launcher/abis";
 import { factoryAddress, network } from "~~/utils/launcher/config";
 import {
@@ -21,17 +23,6 @@ import {
   validateTerms,
 } from "~~/utils/launcher/proposal";
 
-class HttpError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
-    super(message);
-  }
-}
-const fail = (status: number, message: string): never => {
-  throw new HttpError(status, message);
-};
 const digest = (s: string) => createHash("sha256").update(s).digest("hex");
 const randomToken = () => randomBytes(32).toString("hex");
 function origin() {
@@ -123,13 +114,15 @@ export async function handleBeta(request: Request): Promise<Response> {
       fail(413, "Request too large");
     const raw = request.method === "POST" ? await request.text() : "";
     if (raw.length > 32768) fail(413, "Request too large");
-    const body = raw ? JSON.parse(raw) : {};
+    const parsed: unknown = raw ? JSON.parse(raw) : {};
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) fail(400, "JSON object required");
+    const body = parsed as Record<string, unknown>;
     let result: unknown;
     if (path === "challenge" && request.method === "POST") {
-      if (!isAddress(body.address) || body.chainId !== network.id)
+      if (typeof body.address !== "string" || !isAddress(body.address) || body.chainId !== network.id)
         fail(400, "Use an Ethereum wallet on the configured network");
       const token = randomToken();
-      const address = getAddress(body.address);
+      const address = getAddress(body.address as Address);
       const expires = new Date(Date.now() + 5 * 60_000);
       const message = createSiweMessage({
         address,
@@ -195,6 +188,21 @@ export async function handleBeta(request: Request): Promise<Response> {
       ]);
       headers["Set-Cookie"] = setCookie("beta-session", "", 0);
       result = { signedOut: true };
+    } else if (path === "disclosure" && request.method === "GET") {
+      const token = new URL(request.url).searchParams.get("token") || "";
+      if (!isAddress(token)) fail(400, "Valid token address required");
+      const id = await client().readContract({
+        address: factory(),
+        abi: tokenFactoryAbi,
+        functionName: "proposalOf",
+        args: [token as Address],
+      });
+      if (/^0x0+$/.test(id)) fail(404, "Token is not registered by this factory");
+      const p = await proposal(id);
+      const { live } = await readLive(p);
+      if (live[5].toLowerCase() !== token.toLowerCase() || live[2] !== proposalTermsHash(p) || live[3] !== p.revision)
+        fail(409, "Disclosures do not match the registered token");
+      result = { ...p, token };
     } else {
       const address = await actor(request);
       if (path === "session" && request.method === "GET") {
@@ -213,9 +221,11 @@ export async function handleBeta(request: Request): Promise<Response> {
       } else if (path === "admission" && request.method === "POST") {
         await operator(address);
         if (
+          typeof body.address !== "string" ||
           !isAddress(body.address) ||
-          !["launcher", "participant"].includes(body.role) ||
-          typeof body.admitted !== "boolean"
+          !["launcher", "participant"].includes(String(body.role)) ||
+          typeof body.admitted !== "boolean" ||
+          /^0x0{40}$/i.test(String(body.address))
         )
           fail(400, "Choose a valid wallet, role and admission action");
         const reason = text(body.reason, "Reason");
@@ -224,38 +234,30 @@ export async function handleBeta(request: Request): Promise<Response> {
           const data = encodeFunctionData({
             abi: tokenFactoryAbi,
             functionName: "setLauncherApproval",
-            args: [body.address, body.admitted, reason],
+            args: [body.address as Address, body.admitted as boolean, reason],
           });
           if (!body.transactionHash)
             return Response.json({ to: factory(), data, chainId: network.id, value: "0" }, { headers });
-          if (!/^0x[0-9a-fA-F]{64}$/.test(body.transactionHash)) fail(400, "Invalid transaction hash");
-          const rpc = client();
-          const [tx, receipt] = await Promise.all([
-            rpc.getTransaction({ hash: body.transactionHash }),
-            rpc.getTransactionReceipt({ hash: body.transactionHash }),
-          ]);
-          const block = await rpc.getBlock({ blockNumber: receipt.blockNumber });
-          const approved = await rpc.readContract({
+          if (!/^0x[0-9a-fA-F]{64}$/.test(String(body.transactionHash))) fail(400, "Invalid transaction hash");
+          await verifyReceipt({
+            hash: body.transactionHash as Hex,
+            actor: address,
+            data,
+            kind: "admission",
+            launcher: body.address as Address,
+          });
+          const approved = await client().readContract({
             address: factory(),
             abi: tokenFactoryAbi,
             functionName: "approvedLaunchers",
-            args: [body.address],
+            args: [body.address as Address],
           });
-          if (
-            receipt.status !== "success" ||
-            receipt.blockHash !== block.hash ||
-            tx.to?.toLowerCase() !== factory().toLowerCase() ||
-            tx.from.toLowerCase() !== address ||
-            tx.input !== data ||
-            tx.value !== 0n ||
-            approved !== body.admitted
-          )
-            fail(409, "Receipt does not match current Launcher admission");
+          if (approved !== body.admitted) fail(409, "Receipt does not match current Launcher admission");
         }
         await database().query(
-          "INSERT INTO beta_admission(address,role,admitted,actor,reason,source,transaction_hash) VALUES($1,$2,$3,$4,$5,$6,$7)",
+          "INSERT INTO beta_admission(address,role,admitted,actor,reason,source,transaction_hash) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(transaction_hash) WHERE transaction_hash IS NOT NULL DO NOTHING",
           [
-            body.address.toLowerCase(),
+            (body.address as string).toLowerCase(),
             body.role,
             body.admitted,
             address,
@@ -308,34 +310,21 @@ export async function handleBeta(request: Request): Promise<Response> {
       } else if (path === "review" && request.method === "POST") {
         await operator(address);
         const p = await proposal(text(body.proposal, "Proposal"));
-        if (!["approve", "reject", "revoke"].includes(body.action)) fail(400, "Choose approve, reject or revoke");
+        if (!["approve", "reject", "revoke"].includes(String(body.action)))
+          fail(400, "Choose approve, reject or revoke");
         const reason = text(body.reason, "Reason");
         const source = text(body.source, "Source");
         const { live, platform } = await readLive(p);
         if (platform.toLowerCase() !== p.terms.platformRecipient)
           fail(409, "Proposal recipients differ from the factory");
         if (!/^0x0{40}$/i.test(live[5])) fail(409, "Created proposals cannot be reviewed again");
-        const data = reviewData(p, body.action, reason);
+        const data = reviewData(p, String(body.action), reason);
         if (!body.transactionHash) {
           result = { to: factory(), data, chainId: network.id, value: "0", revision: p.revision };
         } else {
-          if (!/^0x[0-9a-fA-F]{64}$/.test(body.transactionHash)) fail(400, "Invalid transaction hash");
-          const rpc = client();
+          if (!/^0x[0-9a-fA-F]{64}$/.test(String(body.transactionHash))) fail(400, "Invalid transaction hash");
           const hash = body.transactionHash as Hex;
-          const [transaction, receipt] = await Promise.all([
-            rpc.getTransaction({ hash }),
-            rpc.getTransactionReceipt({ hash }),
-          ]);
-          const block = await rpc.getBlock({ blockNumber: receipt.blockNumber });
-          if (
-            receipt.status !== "success" ||
-            receipt.blockHash !== block.hash ||
-            transaction.to?.toLowerCase() !== factory().toLowerCase() ||
-            transaction.from.toLowerCase() !== address ||
-            transaction.input !== data ||
-            transaction.value !== 0n
-          )
-            fail(409, "Receipt does not match this operator review");
+          const receipt = await verifyReceipt({ hash, actor: address, data, kind: "review", proposal: p.id });
           if (live[2] !== proposalTermsHash(p) || live[3] !== p.revision || live[4] !== (body.action === "approve"))
             fail(409, "Review was superseded onchain; refresh before retrying");
           await database().query(
@@ -350,7 +339,19 @@ export async function handleBeta(request: Request): Promise<Response> {
         if (p.launcher !== address || p.action !== "approve")
           fail(403, "An approved proposal belonging to this Launcher is required");
         const { live } = await readLive(p);
-        if (live[2] !== proposalTermsHash(p) || live[3] !== p.revision || !live[4] || !/^0x0{40}$/i.test(live[5]))
+        const launcherApproved = await client().readContract({
+          address: factory(),
+          abi: tokenFactoryAbi,
+          functionName: "approvedLaunchers",
+          args: [address],
+        });
+        if (
+          !launcherApproved ||
+          live[2] !== proposalTermsHash(p) ||
+          live[3] !== p.revision ||
+          !live[4] ||
+          !/^0x0{40}$/i.test(live[5])
+        )
           fail(409, "Proposal unavailable, consumed or changed onchain");
         result = p;
       } else if (path === "access" && request.method === "GET") {

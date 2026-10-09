@@ -16,7 +16,9 @@ export function useBetaSession() {
     refetchInterval: 15000,
   });
   const session =
-    query.data?.address.toLowerCase() === address?.toLowerCase() && chainId === network.id ? query.data : undefined;
+    !query.isError && query.data?.address.toLowerCase() === address?.toLowerCase() && chainId === network.id
+      ? query.data
+      : undefined;
   return { ...query, session };
 }
 export function BetaAccess({

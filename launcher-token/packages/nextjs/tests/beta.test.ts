@@ -84,6 +84,7 @@ test("operator admission rejects an unauthenticated wallet address", async () =>
   );
 });
 test("login binds origin, chain, wallet and an atomic single-use challenge", async () => {
+  assert.equal((await request("challenge", null)).response.status, 400);
   const [operator, other] = await wallet.getAddresses();
   assert.equal((await request("challenge", { address: operator, chainId: 1 })).response.status, 400);
   assert.equal(
@@ -129,6 +130,58 @@ test("invitation grants interface access and revocation removes it without loggi
   });
   assert.equal(logout.status, 200);
   assert.equal((await request("session", undefined, participantCookie)).response.status, 401);
+});
+test("receipt confirmation is idempotent and rejects superseded onchain actions", async () => {
+  const [operator, launcher] = await wallet.getAddresses();
+  const cookie = await login(operator);
+  const body = {
+    address: launcher,
+    role: "launcher",
+    admitted: true,
+    reason: "Delayed fixture admission",
+    source: "Chronology test",
+  };
+  const prepared = await request("admission", body, cookie);
+  const oldHash = await send(operator, prepared.data.to, prepared.data.data);
+  await admit(operator, cookie, launcher, "launcher", true);
+  assert.equal((await request("admission", { ...body, transactionHash: oldHash }, cookie)).response.status, 409);
+  const current = await request("admission", body, cookie);
+  const hash = await send(operator, current.data.to, current.data.data);
+  const confirmed = { ...body, transactionHash: hash };
+  assert.equal((await request("admission", confirmed, cookie)).response.status, 200);
+  assert.equal((await request("admission", confirmed, cookie)).response.status, 200);
+  const history = await request("admission", undefined, cookie);
+  assert.equal(history.data.filter((r: { transaction_hash: string }) => r.transaction_hash === hash).length, 1);
+  const terms = {
+    business: "Chronology fixture",
+    links: [],
+    description: "No live business",
+    benefits: "None",
+    name: "Chronology Token",
+    symbol: "CT",
+    launcherRecipient: launcher,
+    platformRecipient: operator,
+    initialPurchase: "none",
+  };
+  const p = (await request("proposals", { terms, source: "Local chronology fixture" }, await login(launcher))).data;
+  const reviewBody = {
+    proposal: p.id,
+    action: "reject",
+    reason: "Delayed rejection",
+    source: "Local chronology fixture",
+  };
+  const preview = await request("review", reviewBody, cookie);
+  const oldReviewHash = await send(operator, preview.data.to, preview.data.data);
+  await review(operator, cookie, p, "revoke");
+  assert.equal(
+    (await request("review", { ...reviewBody, transactionHash: oldReviewHash }, cookie)).response.status,
+    409,
+  );
+  const provenance = await request(`history?proposal=${p.id}`, undefined, cookie);
+  assert.deepEqual(
+    provenance.data.reviews.map((r: { action: string }) => r.action),
+    ["revoke"],
+  );
 });
 test("reviewed disclosures, rejection, revocation and revisions govern Launcher creation", async () => {
   const [operator, launcher, participant] = await wallet.getAddresses();
@@ -234,6 +287,11 @@ test("reviewed disclosures, rejection, revocation and revisions govern Launcher 
     args: [revisionProposal.id],
   });
   assert.notEqual(live[5], "0x0000000000000000000000000000000000000000");
+  const disclosure = await request(`disclosure?token=${live[5]}`);
+  assert.equal(disclosure.response.status, 200);
+  assert.equal(disclosure.data.revision, revisionProposal.revision);
+  assert.deepEqual(disclosure.data.terms.links, ["https://example.com/community"]);
+  assert.equal(disclosure.data.terms.description, "Updated fictional business disclosures");
   // Invitation remains interface-only: contract calls still succeed for non-invited wallets.
   await send(
     participant,

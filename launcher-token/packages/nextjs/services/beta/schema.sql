@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS beta_admission (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE beta_admission ADD COLUMN IF NOT EXISTS transaction_hash text;
+CREATE UNIQUE INDEX IF NOT EXISTS beta_admission_receipt ON beta_admission(transaction_hash) WHERE transaction_hash IS NOT NULL;
 CREATE INDEX IF NOT EXISTS beta_admission_latest ON beta_admission(address, role, id DESC);
 CREATE TABLE IF NOT EXISTS beta_proposals (
   id text PRIMARY KEY, family text NOT NULL, predecessor text REFERENCES beta_proposals(id),

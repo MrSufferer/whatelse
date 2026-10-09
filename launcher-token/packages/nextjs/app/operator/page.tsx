@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AddressInput } from "@scaffold-ui/components";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -53,6 +53,28 @@ function OperatorWorkflow() {
   const [source, setSource] = useState("");
   const [pending, setPending] = useState<{ action: Action; preview: Preview }>();
   const [confirmation, setConfirmation] = useState<{ action: Action; hash: Hex }>();
+  const recoveryKey = `beta-receipt:${network.id}:${factoryAddress}:${session?.address}`;
+  const [recovered, setRecovered] = useState(false);
+  useEffect(() => {
+    setRecovered(false);
+    setConfirmation(undefined);
+    try {
+      const stored = localStorage.getItem(recoveryKey);
+      if (stored) setConfirmation(JSON.parse(stored));
+    } catch {
+      /* A malformed local recovery record cannot authorize an API action. */
+    }
+    setRecovered(true);
+  }, [recoveryKey]);
+  useEffect(() => {
+    if (!recovered) return;
+    try {
+      if (confirmation) localStorage.setItem(recoveryKey, JSON.stringify(confirmation));
+      else localStorage.removeItem(recoveryKey);
+    } catch {
+      /* Receipt remains visible for manual recovery if browser storage is unavailable. */
+    }
+  }, [confirmation, recovered, recoveryKey]);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [history, setHistory] = useState<unknown>();
@@ -142,7 +164,7 @@ function OperatorWorkflow() {
       setBusy(false);
     }
   }
-  const valid = !!reason.trim() && !!source.trim() && !busy && !confirmation;
+  const valid = !!reason.trim() && !!source.trim() && !busy && !confirmation && recovered;
   return (
     <>
       <BetaSignOut />
