@@ -28,3 +28,10 @@ CREATE TABLE IF NOT EXISTS beta_reviews (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS beta_reviews_latest ON beta_reviews(proposal, id DESC);
+
+-- Chain position makes concurrent receipt recording independent of arrival order.
+ALTER TABLE beta_admission ADD COLUMN IF NOT EXISTS block_number text;
+ALTER TABLE beta_admission ADD COLUMN IF NOT EXISTS transaction_index integer;
+ALTER TABLE beta_admission ADD COLUMN IF NOT EXISTS onchain_at timestamptz;
+ALTER TABLE beta_reviews ADD COLUMN IF NOT EXISTS transaction_index integer NOT NULL DEFAULT 0;
+ALTER TABLE beta_reviews ADD COLUMN IF NOT EXISTS onchain_at timestamptz;

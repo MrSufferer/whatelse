@@ -53,5 +53,5 @@ export async function verifyReceipt(input: Confirmation) {
   );
   if (ordered.at(-1)?.transactionHash !== input.hash)
     fail(409, "Action was superseded onchain; refresh before retrying");
-  return receipt;
+  return { ...receipt, onchainAt: new Date(Number(block.timestamp) * 1000) };
 }

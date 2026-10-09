@@ -63,13 +63,13 @@ async function operator(address: Address) {
 }
 async function admission(address: Address, role: string) {
   const r = await database().query(
-    "SELECT admitted FROM beta_admission WHERE address=$1 AND role=$2 ORDER BY id DESC LIMIT 1",
+    "SELECT admitted FROM beta_admission WHERE address=$1 AND role=$2 ORDER BY COALESCE(block_number::numeric, 0) DESC, transaction_index DESC NULLS LAST, id DESC LIMIT 1",
     [address.toLowerCase(), role],
   );
   return r.rows[0]?.admitted === true;
 }
 const proposalSelect = `SELECT p.*, r.action, r.actor AS reviewer, r.created_at AS reviewed_at FROM beta_proposals p
-LEFT JOIN LATERAL (SELECT * FROM beta_reviews WHERE proposal=p.id ORDER BY id DESC LIMIT 1) r ON true`;
+LEFT JOIN LATERAL (SELECT * FROM beta_reviews WHERE proposal=p.id ORDER BY block_number::numeric DESC, transaction_index DESC, id DESC LIMIT 1) r ON true`;
 async function proposal(id: string) {
   const r = await database().query<ReviewedProposal>(`${proposalSelect} WHERE p.id=$1`, [id]);
   return r.rows[0] || fail(404, "Proposal not found");
@@ -230,6 +230,7 @@ export async function handleBeta(request: Request): Promise<Response> {
           fail(400, "Choose a valid wallet, role and admission action");
         const reason = text(body.reason, "Reason");
         const source = text(body.source, "Source");
+        let receipt: Awaited<ReturnType<typeof verifyReceipt>> | undefined;
         if (body.role === "launcher") {
           const data = encodeFunctionData({
             abi: tokenFactoryAbi,
@@ -239,7 +240,7 @@ export async function handleBeta(request: Request): Promise<Response> {
           if (!body.transactionHash)
             return Response.json({ to: factory(), data, chainId: network.id, value: "0" }, { headers });
           if (!/^0x[0-9a-fA-F]{64}$/.test(String(body.transactionHash))) fail(400, "Invalid transaction hash");
-          await verifyReceipt({
+          receipt = await verifyReceipt({
             hash: body.transactionHash as Hex,
             actor: address,
             data,
@@ -255,7 +256,7 @@ export async function handleBeta(request: Request): Promise<Response> {
           if (approved !== body.admitted) fail(409, "Receipt does not match current Launcher admission");
         }
         await database().query(
-          "INSERT INTO beta_admission(address,role,admitted,actor,reason,source,transaction_hash) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(transaction_hash) WHERE transaction_hash IS NOT NULL DO NOTHING",
+          "INSERT INTO beta_admission(address,role,admitted,actor,reason,source,transaction_hash,block_number,transaction_index,onchain_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(transaction_hash) WHERE transaction_hash IS NOT NULL DO NOTHING",
           [
             (body.address as string).toLowerCase(),
             body.role,
@@ -264,6 +265,9 @@ export async function handleBeta(request: Request): Promise<Response> {
             reason,
             source,
             body.role === "launcher" ? body.transactionHash : null,
+            receipt?.blockNumber.toString() || null,
+            receipt?.transactionIndex ?? null,
+            receipt?.onchainAt || null,
           ],
         );
         result = { saved: true };
@@ -328,8 +332,19 @@ export async function handleBeta(request: Request): Promise<Response> {
           if (live[2] !== proposalTermsHash(p) || live[3] !== p.revision || live[4] !== (body.action === "approve"))
             fail(409, "Review was superseded onchain; refresh before retrying");
           await database().query(
-            "INSERT INTO beta_reviews(proposal,action,actor,reason,source,transaction_hash,block_number,block_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(transaction_hash) DO NOTHING",
-            [p.id, body.action, address, reason, source, hash, receipt.blockNumber.toString(), receipt.blockHash],
+            "INSERT INTO beta_reviews(proposal,action,actor,reason,source,transaction_hash,block_number,block_hash,transaction_index,onchain_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(transaction_hash) DO NOTHING",
+            [
+              p.id,
+              body.action,
+              address,
+              reason,
+              source,
+              hash,
+              receipt.blockNumber.toString(),
+              receipt.blockHash,
+              receipt.transactionIndex,
+              receipt.onchainAt,
+            ],
           );
           result = await proposal(p.id);
         }
@@ -365,7 +380,7 @@ export async function handleBeta(request: Request): Promise<Response> {
             .rows,
           reviews: (
             await database().query(
-              "SELECT r.* FROM beta_reviews r JOIN beta_proposals p ON p.id=r.proposal WHERE p.family=$1 ORDER BY r.id",
+              "SELECT r.* FROM beta_reviews r JOIN beta_proposals p ON p.id=r.proposal WHERE p.family=$1 ORDER BY r.block_number::numeric, r.transaction_index, r.id",
               [p.family],
             )
           ).rows,
