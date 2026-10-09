@@ -927,6 +927,96 @@ export const launcherTokenAbi = [
   },
   {
     type: "function",
+    name: "quoteSell",
+    inputs: [
+      {
+        name: "quantity",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "q",
+        type: "tuple",
+        internalType: "struct LauncherToken.SellQuote",
+        components: [
+          {
+            name: "tokens",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "gross",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "fee",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "launcherFee",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "platformFee",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "net",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "supply",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "timestamp",
+            type: "uint256",
+            internalType: "uint256",
+          },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "sell",
+    inputs: [
+      {
+        name: "quantity",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "minimumNetEth",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "deadline",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "net",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     name: "symbol",
     inputs: [],
     outputs: [
@@ -1065,6 +1155,55 @@ export const launcherTokenAbi = [
       },
       {
         name: "refund",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "supply",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "Sold",
+    inputs: [
+      {
+        name: "seller",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "tokens",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "gross",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "launcherFee",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "platformFee",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "net",
         type: "uint256",
         indexed: false,
         internalType: "uint256",
@@ -1223,7 +1362,17 @@ export const launcherTokenAbi = [
   },
   {
     type: "error",
+    name: "InsufficientSupply",
+    inputs: [],
+  },
+  {
+    type: "error",
     name: "MinimumOutputNotMet",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "ProceedsFailed",
     inputs: [],
   },
   {

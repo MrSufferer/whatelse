@@ -117,7 +117,7 @@ export default function Create() {
         benefits.
       </p>
       <div className="launcher-spread">
-        <LauncherEconomics trading={network.id === 31337} />
+        <LauncherEconomics trading={network.id === 31337} supportsSell={network.id === 31337} />
         <form className="launch-form" onSubmit={submit}>
           <h2>Create your test token</h2>
           <label htmlFor="name">Token name</label>

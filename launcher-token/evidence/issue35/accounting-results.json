@@ -1,0 +1,170 @@
+[
+  {
+    "label": "cap buy through wallet",
+    "hash": "0xf3bbb0bd0bf1a47b6c20cf1aa91a8b03f6e540ce4f51ba8551a4c4906000599e",
+    "gross": "10000000000000000000",
+    "fee": "100000000000000000",
+    "before": {
+      "reserve": 2,
+      "launcher": 100000047499994374,
+      "platform": 100000047499994380,
+      "eth": 200000094999988756,
+      "supply": 0
+    },
+    "after": {
+      "reserve": 10000000000000000002,
+      "launcher": 150000047499994374,
+      "platform": 150000047499994380,
+      "eth": 10300000094999988756,
+      "supply": 1000000000000000000000000
+    },
+    "verified": true
+  },
+  {
+    "label": "fractional 0.25 token sale",
+    "hash": "0xdf20507590aa5ac4925b6a7de021c55b0e67c71e37b9785dafd24bb5a0fb6024",
+    "gross": "4749999437500",
+    "fee": "47499994375",
+    "before": {
+      "reserve": 10000000000000000002,
+      "launcher": 150000047499994374,
+      "platform": 150000047499994380,
+      "eth": 10300000094999988756,
+      "supply": 1000000000000000000000000
+    },
+    "after": {
+      "reserve": 9999995250000562502,
+      "launcher": 150000071249991561,
+      "platform": 150000071249991568,
+      "eth": 10299995392500545631,
+      "supply": 999999750000000000000000
+    },
+    "verified": true
+  },
+  {
+    "label": "reopened capacity rebuy",
+    "hash": "0x80646ede0c33d591472a73388eb9e3443b602c14a904c933f9ef778b68963c48",
+    "gross": "4749999437500",
+    "fee": "47499994375",
+    "before": {
+      "reserve": 9999995250000562502,
+      "launcher": 150000071249991561,
+      "platform": 150000071249991568,
+      "eth": 10299995392500545631,
+      "supply": 999999750000000000000000
+    },
+    "after": {
+      "reserve": 10000000000000000002,
+      "launcher": 150000094999988748,
+      "platform": 150000094999988756,
+      "eth": 10300000189999977506,
+      "supply": 1000000000000000000000000
+    },
+    "verified": true
+  },
+  {
+    "label": "zero net, one wei gross burn explicitly confirmed",
+    "hash": "0xfd29a8814c64d2050cb80da73bf2808a224cf66f93af6e14287982ff77b6801c",
+    "gross": "1",
+    "fee": "1",
+    "before": {
+      "reserve": 10000000000000000002,
+      "launcher": 150000094999988748,
+      "platform": 150000094999988756,
+      "eth": 10300000189999977506,
+      "supply": 1000000000000000000000000
+    },
+    "after": {
+      "reserve": 10000000000000000001,
+      "launcher": 150000094999988748,
+      "platform": 150000094999988757,
+      "eth": 10300000189999977506,
+      "supply": 999999999999999999947368
+    },
+    "verified": true
+  },
+  {
+    "label": "full unwind through wallet",
+    "hash": "0x9df92198d850314299103f64dec5a71ef9daad89f312d5058a6e7aa64eca95ab",
+    "gross": "9999999999999999998",
+    "fee": "100000000000000000",
+    "before": {
+      "reserve": 10000000000000000001,
+      "launcher": 150000094999988748,
+      "platform": 150000094999988757,
+      "eth": 10300000189999977506,
+      "supply": 999999999999999999947368
+    },
+    "after": {
+      "reserve": 3,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988757,
+      "eth": 400000189999977508,
+      "supply": 0
+    },
+    "verified": true
+  },
+  {
+    "label": "tiny funded buy 0",
+    "hash": "0x326711308008918b50cdafd22c3023ee14c7acf4c95270dabfcf679f87c5508d",
+    "gross": "1",
+    "fee": "1",
+    "before": {
+      "reserve": 3,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988757,
+      "eth": 400000189999977508,
+      "supply": 0
+    },
+    "after": {
+      "reserve": 4,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988758,
+      "eth": 400000189999977510,
+      "supply": 999999
+    },
+    "verified": true
+  },
+  {
+    "label": "tiny funded buy 1",
+    "hash": "0xe1670c04a7238a4316186c841a7d8179385662bfc196f8a2dd58d28ecf0e3f15",
+    "gross": "1",
+    "fee": "1",
+    "before": {
+      "reserve": 4,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988758,
+      "eth": 400000189999977510,
+      "supply": 999999
+    },
+    "after": {
+      "reserve": 5,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988759,
+      "eth": 400000189999977512,
+      "supply": 1999998
+    },
+    "verified": true
+  },
+  {
+    "label": "tiny full unwind explicitly confirmed",
+    "hash": "0x98b14ae758fd2d91b94874ef33bf5dac76570d7c431a392e659728fde3c7aeeb",
+    "gross": "1",
+    "fee": "1",
+    "before": {
+      "reserve": 5,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988759,
+      "eth": 400000189999977512,
+      "supply": 1999998
+    },
+    "after": {
+      "reserve": 4,
+      "launcher": 200000094999988748,
+      "platform": 200000094999988760,
+      "eth": 400000189999977512,
+      "supply": 0
+    },
+    "verified": true
+  }
+]

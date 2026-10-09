@@ -1,0 +1,112 @@
+{
+  "cap_sell_one": {
+    "supply": "1000000000000000000000000",
+    "quantity": "1000000000000000000",
+    "gross": "18999991000000",
+    "fee": "189999910000",
+    "launcher": "94999955000",
+    "platform": "94999955000",
+    "net": "18809991090000",
+    "resultSupply": "999999000000000000000000"
+  },
+  "cap_sell_quarter": {
+    "supply": "1000000000000000000000000",
+    "quantity": "250000000000000000",
+    "gross": "4749999437500",
+    "fee": "47499994375",
+    "launcher": "23749997187",
+    "platform": "23749997188",
+    "net": "4702499443125",
+    "resultSupply": "999999750000000000000000"
+  },
+  "cap_sell_100000": {
+    "supply": "1000000000000000000000000",
+    "quantity": "100000000000000000000000",
+    "gross": "1810000000000000000",
+    "fee": "18100000000000000",
+    "launcher": "9050000000000000",
+    "platform": "9050000000000000",
+    "net": "1791900000000000000",
+    "resultSupply": "900000000000000000000000"
+  },
+  "cap_sell_one_base_unit": {
+    "supply": "1000000000000000000000000",
+    "quantity": "1",
+    "gross": "0",
+    "fee": "0",
+    "launcher": "0",
+    "platform": "0",
+    "net": "0",
+    "resultSupply": "999999999999999999999999"
+  },
+  "cap_gross_one_net_zero": {
+    "supply": "1000000000000000000000000",
+    "quantity": "52632",
+    "gross": "1",
+    "fee": "1",
+    "launcher": "0",
+    "platform": "1",
+    "net": "0",
+    "resultSupply": "999999999999999999947368"
+  },
+  "cap_gross_two": {
+    "supply": "1000000000000000000000000",
+    "quantity": "105264",
+    "gross": "2",
+    "fee": "1",
+    "launcher": "0",
+    "platform": "1",
+    "net": "1",
+    "resultSupply": "999999999999999999894736"
+  },
+  "one_token_full_unwind": {
+    "supply": "1000000000000000000",
+    "quantity": "1000000000000000000",
+    "gross": "1000009000000",
+    "fee": "10000090000",
+    "launcher": "5000045000",
+    "platform": "5000045000",
+    "net": "990008910000",
+    "resultSupply": "0"
+  },
+  "two_tiny_buys_full_unwind": {
+    "buys": [
+      {
+        "budget": "2",
+        "supply": "0",
+        "quantity": "999999",
+        "gross": "1",
+        "fee": "1",
+        "launcher": "0",
+        "platform": "1",
+        "net": "0",
+        "resultSupply": "999999"
+      },
+      {
+        "budget": "2",
+        "supply": "999999",
+        "quantity": "999999",
+        "gross": "1",
+        "fee": "1",
+        "launcher": "0",
+        "platform": "1",
+        "net": "0",
+        "resultSupply": "1999998"
+      }
+    ],
+    "sell": {
+      "supply": "1999998",
+      "quantity": "1999998",
+      "gross": "1",
+      "fee": "1",
+      "launcher": "0",
+      "platform": "1",
+      "net": "0",
+      "resultSupply": "0"
+    },
+    "lockedDust": "1",
+    "launcherLiability": "0",
+    "platformLiability": "3",
+    "actualBalance": "4"
+  }
+}
