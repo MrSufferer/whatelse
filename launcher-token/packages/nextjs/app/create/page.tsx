@@ -1,29 +1,29 @@
 "use client";
-import { SyntheticEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, SyntheticEvent, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Address } from "@scaffold-ui/components";
+import { useQuery } from "@tanstack/react-query";
 import { decodeEventLog, encodeAbiParameters, keccak256, parseAbiParameters } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
+import { BetaAccess, useBetaSession } from "~~/components/BetaAccess";
 import { LauncherEconomics } from "~~/components/LauncherEconomics";
+import { ProposalRecord } from "~~/components/ProposalRecord";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { tokenFactoryAbi } from "~~/utils/launcher/abis";
-import {
-  configured,
-  factoryAddress,
-  fixtureName,
-  fixtureSymbol,
-  network,
-  proposalId,
-  revision,
-} from "~~/utils/launcher/config";
+import { betaApi } from "~~/utils/launcher/betaApi";
+import { configured, factoryAddress, network } from "~~/utils/launcher/config";
+import { type ReviewedProposal } from "~~/utils/launcher/proposal";
 import { getParsedError } from "~~/utils/scaffold-eth";
 
-export default function Create() {
+function ReviewedCreation({ reviewed }: { reviewed: ReviewedProposal }) {
+  const proposalId = reviewed.id;
+  const revision = reviewed.revision;
   const router = useRouter();
   const { address, chainId } = useAccount();
   const client = usePublicClient({ chainId: network.id });
-  const [name, setName] = useState(fixtureName);
-  const [symbol, setSymbol] = useState(fixtureSymbol);
+  const [name, setName] = useState(reviewed.terms.name);
+  const [symbol, setSymbol] = useState(reviewed.terms.symbol);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const { data: proposal, refetch } = useScaffoldReadContract({
@@ -72,6 +72,9 @@ export default function Create() {
     setBusy(true);
     setStatus("Awaiting wallet approval…");
     try {
+      const fresh = await betaApi<ReviewedProposal>(`creation?proposal=${proposalId}`);
+      if (fresh.revision !== revision || fresh.terms.name !== name || fresh.terms.symbol !== symbol)
+        throw new Error("Review changed; refresh the proposal before signing");
       const hash = await writeContractAsync({
         functionName: "createToken",
         args: [proposalId, name, symbol, revision],
@@ -110,12 +113,9 @@ export default function Create() {
   }
   return (
     <div className="launcher-page">
-      <p className="eyebrow">Fictional proposal / reviewed creation</p>
+      <p className="eyebrow">Approved proposal / reviewed creation</p>
       <h1>Start with a name.</h1>
-      <p className="lead">
-        Fictional Test Prediction Business. A test business solely for beta workflows, with no links or additional
-        benefits.
-      </p>
+      <ProposalRecord proposal={reviewed} />
       <div className="launcher-spread">
         <LauncherEconomics />
         <form className="launch-form" onSubmit={submit}>
@@ -182,6 +182,55 @@ export default function Create() {
           </p>
         </form>
       </div>
+    </div>
+  );
+}
+
+function CreateSelection() {
+  const id = useSearchParams().get("proposal");
+  const { session } = useBetaSession();
+  const query = useQuery({
+    queryKey: ["beta", "creation", id, session?.address],
+    queryFn: () => betaApi<ReviewedProposal>(`creation?proposal=${id}`),
+    enabled: !!id && !!session,
+    retry: false,
+    refetchInterval: 15000,
+  });
+  if (!id)
+    return (
+      <div className="launcher-page">
+        <h1>Choose a reviewed proposal.</h1>
+        <Link className="btn" href="/proposal">
+          View your proposals
+        </Link>
+      </div>
+    );
+  if (query.isLoading)
+    return (
+      <div className="launcher-page" role="status">
+        Reading approved proposal…
+      </div>
+    );
+  if (!query.data || query.error)
+    return (
+      <div className="launcher-page">
+        <p role="alert">{query.error?.message || "Proposal unavailable"}</p>
+        <button className="btn" onClick={() => query.refetch()}>
+          Retry
+        </button>
+        <Link href="/proposal">Return to proposals</Link>
+      </div>
+    );
+  return <ReviewedCreation key={query.data.id} reviewed={query.data} />;
+}
+export default function Create() {
+  return (
+    <div className="launcher-page">
+      <Suspense fallback={<p role="status">Loading proposal…</p>}>
+        <BetaAccess role="launcher">
+          <CreateSelection />
+        </BetaAccess>
+      </Suspense>
     </div>
   );
 }

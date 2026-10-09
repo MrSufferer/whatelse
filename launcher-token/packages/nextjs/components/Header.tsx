@@ -10,6 +10,8 @@ export const Header = () => (
     <nav aria-label="Main navigation">
       <Link href="/">Explore</Link>
       <Link href="/create">Create</Link>
+      <Link href="/proposal">Proposal</Link>
+      <Link href="/operator">Operator</Link>
     </nav>
     <ConnectButton chainStatus="name" showBalance={false} />
   </header>

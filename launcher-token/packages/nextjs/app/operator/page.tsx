@@ -1,275 +1,338 @@
 "use client";
 import { useState } from "react";
-import { Address, AddressInput } from "@scaffold-ui/components";
-import {
-  type Address as AddressType,
-  type Hex,
-  type TransactionReceipt,
-  encodeDeployData,
-  encodeFunctionData,
-  formatEther,
-  isAddress,
-} from "viem";
-import { baseSepolia } from "viem/chains";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { useTransactor } from "~~/hooks/scaffold-eth";
+import Link from "next/link";
+import { AddressInput } from "@scaffold-ui/components";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { type Address, type Hex, encodeFunctionData, isAddress } from "viem";
+import { useAccount } from "wagmi";
+import { BetaAccess, BetaSignOut, useBetaSession } from "~~/components/BetaAccess";
+import { ProposalRecord } from "~~/components/ProposalRecord";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { tokenFactoryAbi } from "~~/utils/launcher/abis";
-import { factoryAddress, fixtureName, fixtureSymbol, proposalId, revision } from "~~/utils/launcher/config";
-import { operatorFactoryBytecode } from "~~/utils/launcher/operatorBytecode";
+import { betaApi } from "~~/utils/launcher/betaApi";
+import { factoryAddress, network } from "~~/utils/launcher/config";
+import { type ReviewedProposal } from "~~/utils/launcher/proposal";
+import { getParsedError } from "~~/utils/scaffold-eth";
 
-const OPERATOR = "0xeD37FD0d6F0f69236E7472B36796e133D20EcC32" as const;
-type Step = "deploy" | "approve" | "review" | "reject";
-type Preview = {
-  step: Step;
-  account: AddressType;
-  to?: AddressType;
-  data: Hex;
-  value: bigint;
-  gas: bigint;
-  maxFeePerGas: bigint;
-  maxPriorityFeePerGas: bigint;
-  time: number;
-};
-export default function OperatorPage() {
-  const { address, chainId, connector } = useAccount();
-  const { data: wallet } = useWalletClient();
-  const client = usePublicClient({ chainId: 84532 });
-  const transact = useTransactor();
-  const [factory, setFactory] = useState(factoryAddress ?? "");
-  const [preview, setPreview] = useState<Preview>();
+type Preview = { to: Address; data: Hex; chainId: number; value: string };
+type Action =
+  | {
+      kind: "review";
+      proposal: ReviewedProposal;
+      action: "approve" | "reject" | "revoke";
+      reason: string;
+      source: string;
+    }
+  | {
+      kind: "admission";
+      address: Address;
+      role: "launcher" | "participant";
+      admitted: boolean;
+      reason: string;
+      source: string;
+    };
+function requestBody(action: Action) {
+  return action.kind === "review" ? { ...action, proposal: action.proposal.id } : action;
+}
+function OperatorWorkflow() {
+  const { address, chainId } = useAccount();
+  const { session } = useBetaSession();
+  const cache = useQueryClient();
+  const { writeContractAsync } = useScaffoldWriteContract({ contractName: "TokenFactory" });
+  const records = useQuery({
+    queryKey: ["beta", "proposals", session?.address],
+    queryFn: () => betaApi<ReviewedProposal[]>("proposals"),
+  });
+  const admissions = useQuery({
+    queryKey: ["beta", "admissions", session?.address],
+    queryFn: () => betaApi<unknown[]>("admission"),
+  });
+  const [target, setTarget] = useState("");
+  const [role, setRole] = useState<"launcher" | "participant">("participant");
+  const [reason, setReason] = useState("");
+  const [source, setSource] = useState("");
+  const [pending, setPending] = useState<{ action: Action; preview: Preview }>();
+  const [confirmation, setConfirmation] = useState<{ action: Action; hash: Hex }>();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [faucet, setFaucet] = useState(false);
-  const [receipts, setReceipts] = useState<TransactionReceipt[]>([]);
-  const eligible =
-    address?.toLowerCase() === OPERATOR.toLowerCase() &&
-    chainId === 84532 &&
-    connector?.name.toLowerCase().includes("metamask");
-  async function verify() {
-    if (!eligible || !wallet || !client)
-      throw new Error("Connect the approved MetaMask account on Base Sepolia (84532).");
-    const accounts = await wallet.getAddresses();
-    if (
-      accounts[0]?.toLowerCase() !== OPERATOR.toLowerCase() ||
-      (await wallet.getChainId()) !== 84532 ||
-      (await client.getChainId()) !== 84532
-    )
-      throw new Error("Wallet account or provider chain changed. Prepare again.");
-    return { wallet, client };
-  }
-  async function prepare(step: Step) {
+  const [status, setStatus] = useState("");
+  const [history, setHistory] = useState<unknown>();
+  async function prepare(action: Action) {
     setBusy(true);
-    setError("");
-    setPreview(undefined);
+    setStatus("");
+    setPending(undefined);
     try {
-      const { client } = await verify();
-      if (step !== "deploy") {
-        if (!isAddress(factory)) throw new Error("Enter the factory from its successful deployment receipt.");
-        // This address comes from a just-deployed receipt before static Scaffold configuration exists.
-        // Network-bound reads verify live owner/recipient permissions while preparing the transaction.
-        const owner = await client.readContract({ address: factory, abi: tokenFactoryAbi, functionName: "owner" });
-        const recipient = await client.readContract({
-          address: factory,
-          abi: tokenFactoryAbi,
-          functionName: "platformRecipient",
-        });
-        if (owner.toLowerCase() !== OPERATOR.toLowerCase() || recipient.toLowerCase() !== OPERATOR.toLowerCase())
-          throw new Error("Factory owner or platform recipient differs from the approved test identity.");
-      }
-      const to = step === "deploy" ? undefined : (factory as AddressType);
-      const data =
-        step === "deploy"
-          ? encodeDeployData({ abi: tokenFactoryAbi, bytecode: operatorFactoryBytecode, args: [OPERATOR, OPERATOR] })
-          : step === "approve"
-            ? encodeFunctionData({
-                abi: tokenFactoryAbi,
-                functionName: "setLauncherApproval",
-                args: [OPERATOR, true, "Approved fictional Base Sepolia test"],
-              })
-            : encodeFunctionData({
-                abi: tokenFactoryAbi,
-                functionName: "reviewProposal",
-                args: [
-                  proposalId,
-                  OPERATOR,
-                  fixtureName,
-                  fixtureSymbol,
-                  revision,
-                  OPERATOR,
-                  step === "review",
-                  step === "review"
-                    ? "Reviewed fictional fixture; no additional benefits"
-                    : "Rejected fictional fixture for the manual rejection walkthrough",
-                ],
-              });
-      const fees = await client.estimateFeesPerGas();
-      const gas = await client.estimateGas({ account: OPERATOR, to, data, value: 0n, ...fees });
-      setPreview({
-        step,
-        account: OPERATOR,
-        to,
-        data,
-        value: 0n,
-        gas: (gas * 120n) / 100n,
-        maxFeePerGas: fees.maxFeePerGas,
-        maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
-        time: Date.now(),
-      });
+      const result = await betaApi<Preview>(action.kind, requestBody(action));
+      if (action.kind === "admission" && action.role === "participant") {
+        setStatus("Participant admission saved.");
+        await cache.invalidateQueries({ queryKey: ["beta"] });
+      } else setPending({ action, preview: result });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Preparation failed");
+      setStatus(getParsedError(e));
     } finally {
       setBusy(false);
     }
+  }
+  async function saveReceipt(record: { action: Action; hash: Hex }) {
+    await betaApi(record.action.kind, { ...requestBody(record.action), transactionHash: record.hash });
+    setConfirmation(undefined);
+    setStatus("Canonical receipt recorded. Review history is preserved; inclusion is provisional.");
+    await cache.invalidateQueries({ queryKey: ["beta"] });
   }
   async function sign() {
-    if (!preview || !faucet) return;
+    if (!pending || !session || session.address.toLowerCase() !== address?.toLowerCase() || chainId !== network.id)
+      return;
     setBusy(true);
-    setError("");
+    setStatus("");
     try {
-      const { wallet } = await verify();
-      if (Date.now() - preview.time > 120000 || (preview.to && preview.to.toLowerCase() !== factory.toLowerCase()))
-        throw new Error("Preview expired or factory changed. Prepare again.");
-      const request = {
-        account: preview.account,
-        to: preview.to,
-        data: preview.data,
-        value: preview.value,
-        gas: preview.gas,
-        maxFeePerGas: preview.maxFeePerGas,
-        maxPriorityFeePerGas: preview.maxPriorityFeePerGas,
-      };
-      await transact(() => wallet.sendTransaction({ ...request, chain: baseSepolia }), {
-        onBlockConfirmation: receipt => {
-          setReceipts(previous => [...previous, receipt]);
-          if (receipt.contractAddress) setFactory(receipt.contractAddress);
-        },
-      });
-      setPreview(undefined);
+      const a = pending.action;
+      const fresh = await betaApi<Preview>(a.kind, requestBody(a));
+      if (
+        fresh.data !== pending.preview.data ||
+        fresh.to.toLowerCase() !== factoryAddress?.toLowerCase() ||
+        fresh.chainId !== chainId ||
+        fresh.value !== "0"
+      )
+        throw new Error("Review changed. Prepare again.");
+      const localData =
+        a.kind === "review"
+          ? encodeFunctionData({
+              abi: tokenFactoryAbi,
+              functionName: "reviewProposal",
+              args: [
+                a.proposal.id,
+                a.proposal.launcher,
+                a.proposal.terms.name,
+                a.proposal.terms.symbol,
+                a.proposal.revision,
+                a.proposal.terms.launcherRecipient,
+                a.action === "approve",
+                a.reason,
+              ],
+            })
+          : encodeFunctionData({
+              abi: tokenFactoryAbi,
+              functionName: "setLauncherApproval",
+              args: [a.address, a.admitted, a.reason],
+            });
+      if (localData !== fresh.data) throw new Error("Transaction differs from the reviewed request");
+      const hash =
+        a.kind === "review"
+          ? await writeContractAsync({
+              functionName: "reviewProposal",
+              args: [
+                a.proposal.id,
+                a.proposal.launcher,
+                a.proposal.terms.name,
+                a.proposal.terms.symbol,
+                a.proposal.revision,
+                a.proposal.terms.launcherRecipient,
+                a.action === "approve",
+                a.reason,
+              ],
+            })
+          : await writeContractAsync({ functionName: "setLauncherApproval", args: [a.address, a.admitted, a.reason] });
+      if (!hash) throw new Error("No transaction submitted");
+      const record = { action: a, hash };
+      setPending(undefined);
+      setConfirmation(record);
+      await saveReceipt(record);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Transaction failed");
+      setStatus(getParsedError(e));
     } finally {
       setBusy(false);
     }
   }
+  const valid = !!reason.trim() && !!source.trim() && !busy && !confirmation;
   return (
-    <div className="launcher-page">
-      <p className="eyebrow">Manual operator / Base Sepolia 84532</p>
-      <h1>Prepare the fictional test.</h1>
-      <p className="lead">
-        Review each transaction, then sign manually in MetaMask. Faucet test ETH only. Transaction value is zero; gas
-        uses test ETH. Wallet connection is not application authentication.
-      </p>
-      <p>Approved deployer, operator, launcher and both recipients:</p>
-      <Address address={OPERATOR} />
-      {!eligible && (
-        <p role="status">Connect the approved MetaMask account and select Base Sepolia with the wallet controls.</p>
-      )}
-      <label className="label">
-        <input className="checkbox" type="checkbox" checked={faucet} onChange={e => setFaucet(e.target.checked)} />I am
-        using faucet test ETH only.
-      </label>
+    <>
+      <BetaSignOut />
+      <Link className="link" href="/operator/deploy">
+        Manual Base Sepolia deployment preparation
+      </Link>
       <section className="launch-form">
-        <h2>1. Deploy factory</h2>
-        <p>Constructor operator and platform recipient both use the approved address.</p>
-        <button className="btn" disabled={!eligible || busy} onClick={() => prepare("deploy")}>
-          Prepare deployment
-        </button>
-        <h2>2. Approve launcher</h2>
+        <h2>Admission and review provenance</h2>
         <label>
-          Factory from successful deployment receipt
-          <AddressInput
-            value={factory}
-            onChange={value => {
-              setFactory(value);
-              setPreview(undefined);
+          Reason (required)
+          <textarea
+            className="textarea"
+            value={reason}
+            maxLength={2000}
+            onChange={e => {
+              setReason(e.target.value);
+              setPending(undefined);
             }}
           />
         </label>
-        <button className="btn" disabled={!eligible || busy || !isAddress(factory)} onClick={() => prepare("approve")}>
-          Prepare launcher approval
-        </button>
-        <h2>3. Review fictional proposal</h2>
+        <label>
+          Review source (required)
+          <input
+            className="input"
+            value={source}
+            maxLength={2000}
+            autoComplete="off"
+            onChange={e => {
+              setSource(e.target.value);
+              setPending(undefined);
+            }}
+          />
+        </label>
+        <h2>Invite or revoke interface access</h2>
+        <label>
+          Wallet (required)
+          <AddressInput value={target} onChange={setTarget} />
+        </label>
+        <label>
+          Role
+          <select className="select" value={role} onChange={e => setRole(e.target.value as typeof role)}>
+            <option value="participant">Participant</option>
+            <option value="launcher">Launcher</option>
+          </select>
+        </label>
+        <div className="flex flex-wrap gap-3">
+          <button
+            className="btn"
+            disabled={!valid || !isAddress(target)}
+            onClick={() =>
+              prepare({ kind: "admission", address: target as Address, role, admitted: true, reason, source })
+            }
+          >
+            Approve / invite {role}
+          </button>
+          <button
+            className="btn"
+            disabled={!valid || !isAddress(target)}
+            onClick={() =>
+              prepare({ kind: "admission", address: target as Address, role, admitted: false, reason, source })
+            }
+          >
+            Revoke {role} admission
+          </button>
+        </div>
         <p>
-          {fixtureName} / {fixtureSymbol}. No additional benefits. Launcher and recipient use the approved address.
+          Participant invitation changes interface access only. Launcher approval also updates onchain creation
+          permission. Ownership, transfers and exit access remain available.
         </p>
-        <p>
-          Proposal: <code>{proposalId}</code>
-          <br />
-          Revision: <code>{revision}</code>
-        </p>
-        <button className="btn" disabled={!eligible || busy || !isAddress(factory)} onClick={() => prepare("review")}>
-          Prepare proposal review
-        </button>
-        <h2>4. Rejected-proposal walkthrough</h2>
-        <p>
-          Use a fresh factory with an approved launcher and an unused proposal. Reject the proposal before creation; an
-          already-created proposal cannot be reviewed again.
-        </p>
-        <button className="btn" disabled={!eligible || busy || !isAddress(factory)} onClick={() => prepare("reject")}>
-          Prepare proposal rejection
-        </button>
       </section>
-      {error && <p role="alert">{error}</p>}
-      {preview && (
+      <p role="status" aria-live="polite" className="transaction-status">
+        {busy ? "Waiting for wallet / persistence…" : status}
+      </p>
+      {pending && (
         <section className="launch-form">
-          <h2>Exact transaction</h2>
-          <p>Action: {preview.step}; chain: Base Sepolia (84532); account:</p>
-          <Address address={preview.account} />
-          {preview.to ? (
-            <>
-              <p>To:</p>
-              <Address address={preview.to} />
-            </>
-          ) : (
-            <p>To: contract creation (no recipient)</p>
-          )}
+          <h2>Review before signing</h2>
           <p>
-            Value: 0 wei. Gas limit (estimate + 20%): {preview.gas.toString()}. Maximum fee per gas:{" "}
-            {preview.maxFeePerGas.toString()} wei. Priority fee cap: {preview.maxPriorityFeePerGas.toString()} wei.
+            Action:{" "}
+            {pending.action.kind === "review"
+              ? pending.action.action
+              : pending.action.admitted
+                ? "approve Launcher"
+                : "revoke Launcher"}{" "}
+            · {network.name} · transaction value: 0 ETH. Wallet displays gas; use faucet test ETH only.
           </p>
           <p>
-            Execution gas cap: {formatEther(preview.gas * preview.maxFeePerGas)} test ETH. An L1 data fee may be added;
-            review the total in MetaMask. Preview expires after two minutes.
+            Reason: {pending.action.reason} · Source: {pending.action.source}
           </p>
           <label>
             Exact calldata
-            <textarea className="textarea w-full" rows={8} readOnly value={preview.data} />
+            <textarea className="textarea" readOnly value={pending.preview.data} />
           </label>
-          <button className="btn btn-primary" disabled={busy || !eligible || !faucet} onClick={sign}>
-            {busy ? "Waiting for wallet / receipt…" : "Review and sign in MetaMask"}
+          <button className="btn btn-primary" disabled={busy} onClick={sign}>
+            Review and sign in wallet
+          </button>
+          <button className="btn" onClick={() => setPending(undefined)} disabled={busy}>
+            Cancel
           </button>
         </section>
       )}
-      <section>
-        <h2>Receipts and provenance</h2>
-        {receipts.length === 0 && <p>No transactions signed here. Preserve receipts before leaving this page.</p>}
-        {receipts.map(receipt => (
-          <article key={receipt.transactionHash}>
-            <p>
-              {receipt.status} · chain 84532 · block {receipt.blockNumber.toString()} · block hash {receipt.blockHash}
-            </p>
-            <a
-              className="link"
-              target="_blank"
-              rel="noreferrer"
-              href={`https://sepolia.basescan.org/tx/${receipt.transactionHash}`}
-            >
-              {receipt.transactionHash}
-            </a>
-            {receipt.contractAddress && <Address address={receipt.contractAddress} />}
-            <p>
-              Gas used: {receipt.gasUsed.toString()}; effective gas price: {receipt.effectiveGasPrice.toString()} wei.
-            </p>
-          </article>
-        ))}
-        <p>
-          Record factory address, deployment transaction hash, block number/hash, chain ID, repository commit and
-          compiler settings in deployment evidence. After deployment and both approvals succeed, set{" "}
-          <code>NEXT_PUBLIC_TOKEN_FACTORY</code> to the factory address from the receipt, configure Base Sepolia, then
-          restart or rebuild the frontend. Verify owner, launcher approval and proposal revision with contract reads
-          before creating the Launch.
+      {confirmation && (
+        <section className="launch-form">
+          <p className="transaction-status">
+            Signed transaction: {confirmation.hash}. If persistence failed, record this receipt before leaving; retry
+            does not submit another transaction.
+          </p>
+          <button
+            className="btn"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              try {
+                await saveReceipt(confirmation);
+              } catch (e) {
+                setStatus(getParsedError(e));
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            Retry recording receipt
+          </button>
+        </section>
+      )}
+      <h2>Proposal review queue</h2>
+      {records.isLoading && <p role="status">Reading review queue…</p>}
+      {records.error && (
+        <p role="alert">
+          {records.error.message}
+          <button className="btn" onClick={() => records.refetch()}>
+            Retry
+          </button>
         </p>
-      </section>
+      )}
+      {records.data?.length === 0 && (
+        <p>No proposals submitted. A Launcher can submit their business and token terms from the Proposal page.</p>
+      )}
+      {records.data?.map(p => (
+        <article key={p.id}>
+          <ProposalRecord proposal={p} />
+          <div className="flex flex-wrap gap-3">
+            {(["approve", "reject", "revoke"] as const).map(action => (
+              <button
+                key={action}
+                className="btn"
+                disabled={!valid}
+                onClick={() => prepare({ kind: "review", proposal: p, action, reason, source })}
+              >
+                {action} proposal
+              </button>
+            ))}
+            <button
+              className="btn"
+              onClick={async () => {
+                try {
+                  setHistory(await betaApi(`history?proposal=${p.id}`));
+                } catch (e) {
+                  setStatus(getParsedError(e));
+                }
+              }}
+            >
+              View provenance
+            </button>
+          </div>
+        </article>
+      ))}
+      {history !== undefined && <pre className="transaction-status">{JSON.stringify(history, null, 2)}</pre>}
+      <h2>Admission history</h2>
+      {admissions.isLoading && <p role="status">Reading admission history…</p>}
+      {admissions.error && (
+        <p role="alert">
+          {admissions.error.message}
+          <button className="btn" onClick={() => admissions.refetch()}>
+            Retry
+          </button>
+        </p>
+      )}
+      {admissions.data?.length === 0 && <p>No admission changes recorded.</p>}
+      {admissions.data && <pre className="transaction-status">{JSON.stringify(admissions.data, null, 2)}</pre>}
+    </>
+  );
+}
+export default function OperatorPage() {
+  return (
+    <div className="launcher-page">
+      <p className="eyebrow">Operator / Controlled Beta</p>
+      <h1>Review and admit.</h1>
+      <BetaAccess role="operator">
+        <OperatorWorkflow />
+      </BetaAccess>
     </div>
   );
 }

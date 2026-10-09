@@ -358,3 +358,24 @@ dd {
 .transaction-status {
   overflow-wrap: anywhere;
 }
+
+.launch-form textarea,
+.launch-form select {
+  width: 100%;
+  min-width: 0;
+}
+.launcher-page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.launcher-page article {
+  margin-block: 2rem;
+}
+.launcher-page .launcher-page {
+  width: 100%;
+  margin-inline: 0;
+}
+.launcher-nav nav {
+  flex-wrap: wrap;
+}

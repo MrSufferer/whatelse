@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Address } from "@scaffold-ui/components";
+import { BetaAccess } from "~~/components/BetaAccess";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { configured, network } from "~~/utils/launcher/config";
 
@@ -20,7 +21,7 @@ function LaunchRow({ index }: { index: bigint }) {
     </div>
   );
 }
-export default function Explore() {
+function Explore() {
   const {
     data: count,
     isLoading,
@@ -68,10 +69,16 @@ export default function Explore() {
           </>
         )}
       </section>
-      <p>
-        Participant authentication and invitation management are unavailable in this creation test interface. Connecting
-        a wallet proves no authenticated beta session or platform endorsement.
-      </p>
+    </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <div className="launcher-page">
+      <BetaAccess role="participant">
+        <Explore />
+      </BetaAccess>
     </div>
   );
 }
