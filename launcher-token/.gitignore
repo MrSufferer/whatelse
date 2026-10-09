@@ -21,3 +21,6 @@ node_modules
 
 # cli
 dist
+
+# Licensed TradingView distribution: never publish in this repository.
+packages/nextjs/public/charting_library/

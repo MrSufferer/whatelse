@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Address } from "@scaffold-ui/components";
 import { decodeEventLog, formatUnits, isAddress, isHash } from "viem";
 import { usePublicClient } from "wagmi";
+import { LauncherChart } from "~~/components/LauncherChart";
 import { LauncherEconomics } from "~~/components/LauncherEconomics";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { launcherTokenAbi, tokenFactoryAbi } from "~~/utils/launcher/abis";
@@ -179,26 +180,7 @@ export default function Detail() {
           </button>
           <div className="launcher-spread">
             <section>
-              <h2>Permanent linear preset</h2>
-              <svg
-                className="curve"
-                role="img"
-                aria-label="Mathematical preset: marginal price rises linearly from 0.000001 ETH at zero supply to 0.000019 ETH at one million tokens"
-                viewBox="0 0 600 260"
-              >
-                <path d="M50 20V220H580" fill="none" stroke="currentColor" />
-                <path d="M50 210L570 30" fill="none" stroke="var(--launcher-mint)" strokeWidth="3" />
-                <text x="55" y="245">
-                  0 tokens
-                </text>
-                <text x="420" y="245">
-                  1,000,000 tokens
-                </text>
-                <text x="60" y="30">
-                  Marginal price / supply
-                </text>
-              </svg>
-              <p>Mathematical price curve, not trading history or a forecast.</p>
+              <LauncherChart chainId={network.id} address={params.address} name={info.name} symbol={info.symbol} />
               <dl className="token-stats">
                 <div>
                   <dt>Outstanding supply</dt>

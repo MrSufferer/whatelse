@@ -280,14 +280,24 @@ dd {
   color: var(--launcher-muted);
   padding: 1.5rem 4%;
 }
-.curve {
-  width: 100%;
-  height: auto;
+.launcher-chart-shell {
+  position: relative;
   background: var(--launcher-surface);
 }
-.curve text {
-  fill: var(--launcher-muted);
-  font: 12px monospace;
+.launcher-chart {
+  width: 100%;
+  height: clamp(360px, 55vh, 560px);
+}
+.launcher-chart-status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--launcher-surface);
+  padding: 1rem;
+  text-align: center;
 }
 .token-stats {
   display: flex;
