@@ -124,6 +124,7 @@
   --launcher-surface: #181c1b;
   --launcher-text: #eff4f0;
   --launcher-mint: #a2f5bc;
+  --launcher-pink: #ffa5b4;
   --launcher-muted: #b7c4bc;
   --launcher-border: #3b4841;
 }
@@ -298,6 +299,14 @@ dd {
   background: var(--launcher-surface);
   padding: 1rem;
   text-align: center;
+}
+.launcher-chart-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--launcher-muted);
+  pointer-events: none;
 }
 .token-stats {
   display: flex;
