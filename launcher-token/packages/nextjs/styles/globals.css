@@ -358,3 +358,28 @@ dd {
 .transaction-status {
   overflow-wrap: anywhere;
 }
+
+.buy-breakdown {
+  display: grid;
+  gap: 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+.buy-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--launcher-border);
+  padding-bottom: 0.5rem;
+}
+.buy-breakdown dt {
+  color: var(--launcher-muted);
+}
+.buy-breakdown dd {
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.launch-form .input,
+.launch-form .select {
+  width: 100%;
+  min-height: 44px;
+}

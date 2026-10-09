@@ -2,11 +2,88 @@
 pragma solidity ^0.8.20;
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import { ERC20Capped } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 
-/// @notice Creation-only token. Trading is unavailable in this release; no mint authority exists.
-/// Future market-maker releases require a separately reviewed deployment, never an upgrade to this token.
-contract LauncherToken is ERC20Capped {
+/// @notice Immutable budget-buy release for fresh deployments only. Sell-back is not implemented yet.
+contract LauncherToken is ERC20Capped, ReentrancyGuard {
+    uint256 public constant TRADING_VERSION = 1;
+    uint256 public curveReserve;
+    uint256 public launcherFeesEarned;
+    uint256 public platformFeesEarned;
+
+    // No claims in this release: earned fees remain separate liabilities.
+    struct BuyQuote {
+        uint256 tokens;
+        uint256 gross;
+        uint256 fee;
+        uint256 launcherFee;
+        uint256 platformFee;
+        uint256 refund;
+        uint256 supply;
+        uint256 timestamp;
+    }
+    error ZeroQuantity();
+    error SupplyCapReached();
+    error DeadlineExpired();
+    error MinimumOutputNotMet();
+    error RefundFailed();
+    event Bought(
+        address indexed buyer,
+        uint256 tokens,
+        uint256 gross,
+        uint256 launcherFee,
+        uint256 platformFee,
+        uint256 refund,
+        uint256 supply
+    );
+
+    function marginalPrice() public view returns (uint256) {
+        return START_PRICE_WEI + SLOPE_WEI_PER_TOKEN * totalSupply() / 1e18;
+    }
+
+    /// @dev Unified numerator gives one upward rounding of the integral difference.
+    /// With s,x <= 1e24 the numerator is at most 1e55, safely below uint256.
+    function buyCost(uint256 quantity) public view returns (uint256 gross, uint256 fee) {
+        uint256 supply = totalSupply();
+        if (quantity > cap() - supply) revert ERC20ExceededCap(supply + quantity, cap());
+        uint256 numerator = quantity * (START_PRICE_WEI * 1e18 + 9e6 * (2 * supply + quantity));
+        gross = (numerator + 1e36 - 1) / 1e36;
+        fee = (gross + 99) / 100;
+    }
+
+    function quoteBuy(uint256 budget) public view returns (BuyQuote memory q) {
+        uint256 supply = totalSupply();
+        uint256 high = cap() - supply;
+        if (high == 0) revert SupplyCapReached();
+        uint256 low;
+        while (low < high) {
+            uint256 middle = low + (high - low + 1) / 2;
+            (uint256 candidateGross, uint256 candidateFee) = buyCost(middle);
+            if (candidateGross + candidateFee <= budget) low = middle;
+            else high = middle - 1;
+        }
+        if (low == 0) revert ZeroQuantity();
+        (uint256 gross, uint256 fee) = buyCost(low);
+        q = BuyQuote(low, gross, fee, fee / 2, fee - fee / 2, budget - gross - fee, supply, block.timestamp);
+    }
+
+    function buy(uint256 minimumTokens, uint256 deadline) external payable nonReentrant returns (uint256 tokens) {
+        if (block.timestamp > deadline) revert DeadlineExpired();
+        BuyQuote memory q = quoteBuy(msg.value);
+        if (q.tokens < minimumTokens) revert MinimumOutputNotMet();
+        curveReserve += q.gross;
+        launcherFeesEarned += q.launcherFee;
+        platformFeesEarned += q.platformFee;
+        _mint(msg.sender, q.tokens);
+        emit Bought(msg.sender, q.tokens, q.gross, q.launcherFee, q.platformFee, q.refund, totalSupply());
+        if (q.refund != 0) {
+            (bool success,) = msg.sender.call{ value: q.refund }("");
+            if (!success) revert RefundFailed();
+        }
+        return q.tokens;
+    }
+
     address public immutable launcher;
     address public immutable launcherRecipient;
     address public immutable platformRecipient;

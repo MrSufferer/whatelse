@@ -1,4 +1,4 @@
-export function LauncherEconomics() {
+export function LauncherEconomics({ trading = false }: { trading?: boolean }) {
   return (
     <section className="economics" aria-label="Immutable economics">
       <h2>One permanent preset.</h2>
@@ -33,9 +33,19 @@ export function LauncherEconomics() {
         backing is separate from fees and is never business funding.
       </p>
       <p>
-        <strong>Creation-only test fixture.</strong> Supply starts at zero. Trading and fee claims are unavailable. This
-        token cannot be upgraded; future trading requires a new reviewed deployment. No initial purchase or free
-        allocation.
+        {trading ? (
+          <>
+            <strong>Local budget-buy test fixture.</strong> Supply starts at zero with no free allocation. Buys mint
+            funded tokens. Sell-back and fee claims are unavailable in this release. No real funds or funded beta. The
+            deployment is immutable.
+          </>
+        ) : (
+          <>
+            <strong>Creation-only test fixture.</strong> Supply starts at zero. Trading and fee claims are unavailable.
+            This token cannot be upgraded; future trading requires a new reviewed deployment. No initial purchase or
+            free allocation.
+          </>
+        )}
       </p>
       <p>
         No baseline business ownership, revenue, governance, redemption or prediction-market outcome-payout rights.
