@@ -38,8 +38,8 @@ export function LauncherEconomics() {
         allocation.
       </p>
       <p>
-        No baseline business ownership, revenue, governance, redemption or prediction-market outcome-payout rights.
-        Additional benefits: none.
+        No baseline business ownership, revenue, governance, redemption or prediction-market outcome-payout rights. Any
+        additional benefits must be stated in the reviewed Launch disclosures.
       </p>
     </section>
   );
