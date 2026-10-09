@@ -31,6 +31,7 @@ export default function Detail() {
     launcher: `0x${string}`;
     platform: `0x${string}`;
     trading: boolean;
+    supportsSell: boolean;
   }>();
   const [error, setError] = useState("");
   const [finality, setFinality] = useState(
@@ -57,16 +58,22 @@ export default function Detail() {
           read("platformRecipient"),
         ]);
         let trading = false;
+        let supportsSell = false;
         try {
-          trading =
-            (await client.readContract({ address: token, abi: launcherTokenAbi, functionName: "TRADING_VERSION" })) ===
-            1n;
+          const version = await client.readContract({
+            address: token,
+            abi: launcherTokenAbi,
+            functionName: "TRADING_VERSION",
+          });
+          trading = version === 1n || version === 2n;
+          supportsSell = version === 2n;
         } catch {
           /* Immutable creation-only deployments lack this capability. */
         }
         if (active)
           setInfo({
             trading,
+            supportsSell,
             name: name as string,
             symbol: symbol as string,
             supply: supply as bigint,
@@ -163,7 +170,12 @@ export default function Detail() {
       ) : (
         <>
           <p className="lead">
-            {info.symbol} · {info.trading ? "Budget-buy local test fixture" : "Creation-only fictional test fixture"}
+            {info.symbol} ·{" "}
+            {info.supportsSell
+              ? "Curve-trading local test fixture"
+              : info.trading
+                ? "Budget-buy local test fixture"
+                : "Creation-only fictional test fixture"}
           </p>
           <div className="token-identity">
             Identity: chain {network.id} / <Address address={token} />
@@ -193,6 +205,7 @@ export default function Detail() {
           </button>
           {info.trading && token ? (
             <LauncherBuy
+              supportsSell={info.supportsSell}
               token={token}
               name={info.name}
               symbol={info.symbol}
@@ -253,7 +266,7 @@ export default function Detail() {
               </tbody>
             </table>
           </section>
-          <LauncherEconomics trading={info.trading} />
+          <LauncherEconomics trading={info.trading} supportsSell={info.supportsSell} />
         </>
       )}
       {error && (

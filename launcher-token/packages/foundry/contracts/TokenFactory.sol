@@ -5,9 +5,9 @@ import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import { ERC20Capped } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 
-/// @notice Immutable budget-buy release for fresh deployments only. Sell-back is not implemented yet.
+/// @notice Immutable curve trading release for fresh deployments only.
 contract LauncherToken is ERC20Capped, ReentrancyGuard {
-    uint256 public constant TRADING_VERSION = 1;
+    uint256 public constant TRADING_VERSION = 2;
     uint256 public curveReserve;
     uint256 public launcherFeesEarned;
     uint256 public platformFeesEarned;
@@ -82,6 +82,61 @@ contract LauncherToken is ERC20Capped, ReentrancyGuard {
             if (!success) revert RefundFailed();
         }
         return q.tokens;
+    }
+
+    struct SellQuote {
+        uint256 tokens;
+        uint256 gross;
+        uint256 fee;
+        uint256 launcherFee;
+        uint256 platformFee;
+        uint256 net;
+        uint256 supply;
+        uint256 timestamp;
+    }
+    error InsufficientSupply();
+    error ProceedsFailed();
+    event Sold(
+        address indexed seller,
+        uint256 tokens,
+        uint256 gross,
+        uint256 launcherFee,
+        uint256 platformFee,
+        uint256 net,
+        uint256 supply
+    );
+
+    /// @dev One downward rounding of the integral difference over [s-x,s].
+    /// q.tokens <= supply <= cap bounds the numerator below 1e55.
+    function quoteSell(uint256 quantity) public view returns (SellQuote memory q) {
+        if (quantity == 0) revert ZeroQuantity();
+        uint256 supply = totalSupply();
+        if (quantity > supply) revert InsufficientSupply();
+        uint256 gross = quantity * (START_PRICE_WEI * 1e18 + 9e6 * (2 * supply - quantity)) / 1e36;
+        uint256 fee = (gross + 99) / 100;
+        q = SellQuote(quantity, gross, fee, fee / 2, fee - fee / 2, gross - fee, supply, block.timestamp);
+    }
+
+    function sell(uint256 quantity, uint256 minimumNetEth, uint256 deadline)
+        external
+        nonReentrant
+        returns (uint256 net)
+    {
+        if (block.timestamp > deadline) revert DeadlineExpired();
+        SellQuote memory q = quoteSell(quantity);
+        if (q.net < minimumNetEth) revert MinimumOutputNotMet();
+        // ERC20's burn checks the caller's holdings. Every effect rolls back on failed delivery.
+        _burn(msg.sender, quantity);
+        curveReserve -= q.gross;
+        launcherFeesEarned += q.launcherFee;
+        platformFeesEarned += q.platformFee;
+        emit Sold(msg.sender, quantity, q.gross, q.launcherFee, q.platformFee, q.net, totalSupply());
+        // Zero proceeds intentionally burns fractional residue without a pointless callback.
+        if (q.net != 0) {
+            (bool success,) = msg.sender.call{ value: q.net }("");
+            if (!success) revert ProceedsFailed();
+        }
+        return q.net;
     }
 
     address public immutable launcher;

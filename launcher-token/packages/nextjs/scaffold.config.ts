@@ -25,10 +25,10 @@ const scaffoldConfig = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY,
   // If you want to use a different RPC for a specific network, you can add it here.
   // The key is the chain ID, and the value is the HTTP RPC URL
-  rpcOverrides: {
-    // Example:
-    // [chains.mainnet.id]: "https://mainnet.rpc.buidlguidl.com",
-  },
+  rpcOverrides:
+    process.env.NEXT_PUBLIC_LOCAL_CHAIN === "true" && process.env.NEXT_PUBLIC_LOCAL_RPC
+      ? { [chains.foundry.id]: process.env.NEXT_PUBLIC_LOCAL_RPC }
+      : {},
   // This is ours WalletConnect's default project ID.
   // You can get your own at https://cloud.walletconnect.com
   // It's recommended to store it in an env variable:

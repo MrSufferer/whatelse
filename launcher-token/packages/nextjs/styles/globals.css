@@ -383,3 +383,25 @@ dd {
   width: 100%;
   min-height: 44px;
 }
+
+.trade-modes {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.launch-form .sell-button {
+  background: var(--launcher-pink);
+  color: var(--launcher-bg);
+  border-color: var(--launcher-pink);
+}
+.zero-proceeds {
+  border: 1px solid var(--launcher-pink);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.zero-proceeds label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}

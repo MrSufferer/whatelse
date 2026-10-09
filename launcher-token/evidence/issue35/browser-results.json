@@ -1,0 +1,179 @@
+{
+  "results": [
+    {
+      "label": "cap buy through wallet",
+      "before": {
+        "supply": "0",
+        "holdings": "0",
+        "eth": "200000094999988756",
+        "wallet": "9999796338504705561046"
+      },
+      "after": {
+        "supply": "1000000000000000000000000",
+        "holdings": "1000000000000000000000000",
+        "eth": "10300000094999988756",
+        "wallet": "9989696316923992674426"
+      },
+      "hash": "0xf3bbb0bd0bf1a47b6c20cf1aa91a8b03f6e540ce4f51ba8551a4c4906000599e",
+      "gas": "21580712886620",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "fractional 0.25 token sale",
+      "before": {
+        "supply": "1000000000000000000000000",
+        "holdings": "1000000000000000000000000",
+        "eth": "10300000094999988756",
+        "wallet": "9989696316923992674426"
+      },
+      "after": {
+        "supply": "999999750000000000000000",
+        "holdings": "999999750000000000000000",
+        "eth": "10299995392500545631",
+        "wallet": "9989696316333363477884"
+      },
+      "hash": "0xdf20507590aa5ac4925b6a7de021c55b0e67c71e37b9785dafd24bb5a0fb6024",
+      "gas": "5293128639667",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "reopened capacity rebuy",
+      "before": {
+        "supply": "999999750000000000000000",
+        "holdings": "999999750000000000000000",
+        "eth": "10299995392500545631",
+        "wallet": "9989696316333363477884"
+      },
+      "after": {
+        "supply": "1000000000000000000000000",
+        "holdings": "1000000000000000000000000",
+        "eth": "10300000189999977506",
+        "wallet": "9989696300040200233294"
+      },
+      "hash": "0x80646ede0c33d591472a73388eb9e3443b602c14a904c933f9ef778b68963c48",
+      "gas": "11495663812715",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "zero net, one wei gross burn explicitly confirmed",
+      "before": {
+        "supply": "1000000000000000000000000",
+        "holdings": "1000000000000000000000000",
+        "eth": "10300000189999977506",
+        "wallet": "9989696300040200233294"
+      },
+      "after": {
+        "supply": "999999999999999999947368",
+        "holdings": "999999999999999999947368",
+        "eth": "10300000189999977506",
+        "wallet": "9989696296605384177154"
+      },
+      "hash": "0xfd29a8814c64d2050cb80da73bf2808a224cf66f93af6e14287982ff77b6801c",
+      "gas": "3434816056140",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "wallet rejected sale",
+      "before": {
+        "supply": "999999999999999999947368",
+        "holdings": "999999999999999999947368",
+        "eth": "10300000189999977506",
+        "wallet": "9989696296605384177154"
+      },
+      "after": {
+        "supply": "999999999999999999947368",
+        "holdings": "999999999999999999947368",
+        "eth": "10300000189999977506",
+        "wallet": "9989696296605384177154"
+      }
+    },
+    {
+      "label": "full unwind through wallet",
+      "before": {
+        "supply": "999999999999999999947368",
+        "holdings": "999999999999999999947368",
+        "eth": "10300000189999977506",
+        "wallet": "9989696296605384177154"
+      },
+      "after": {
+        "supply": "0",
+        "holdings": "0",
+        "eth": "400000189999977508",
+        "wallet": "9999596293580936101403"
+      },
+      "hash": "0x9df92198d850314299103f64dec5a71ef9daad89f312d5058a6e7aa64eca95ab",
+      "gas": "3024448075749",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "tiny funded buy 0",
+      "before": {
+        "supply": "0",
+        "holdings": "0",
+        "eth": "400000189999977508",
+        "wallet": "9999596293580936101403"
+      },
+      "after": {
+        "supply": "999999",
+        "holdings": "999999",
+        "eth": "400000189999977510",
+        "wallet": "9999596284142714514681"
+      },
+      "hash": "0x326711308008918b50cdafd22c3023ee14c7acf4c95270dabfcf679f87c5508d",
+      "gas": "9438221586720",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "tiny funded buy 1",
+      "before": {
+        "supply": "999999",
+        "holdings": "999999",
+        "eth": "400000189999977510",
+        "wallet": "9999596284142714514681"
+      },
+      "after": {
+        "supply": "1999998",
+        "holdings": "1999998",
+        "eth": "400000189999977512",
+        "wallet": "9999596278021255789479"
+      },
+      "hash": "0xe1670c04a7238a4316186c841a7d8179385662bfc196f8a2dd58d28ecf0e3f15",
+      "gas": "6121458725200",
+      "receiptStatus": "0x1"
+    },
+    {
+      "label": "tiny full unwind explicitly confirmed",
+      "before": {
+        "supply": "1999998",
+        "holdings": "1999998",
+        "eth": "400000189999977512",
+        "wallet": "9999596278021255789479"
+      },
+      "after": {
+        "supply": "0",
+        "holdings": "0",
+        "eth": "400000189999977512",
+        "wallet": "9999596276717375368209"
+      },
+      "hash": "0x98b14ae758fd2d91b94874ef33bf5dac76570d7c431a392e659728fde3c7aeeb",
+      "gas": "1303880421270",
+      "receiptStatus": "0x1"
+    }
+  ],
+  "quoteText": "LOCAL TEST ONLY \u00b7 CURVE TRADING\n\nBuy\nSell\nSell FTEST\nToken quantity to sell\n\nWallet ETH: 9,989.696316923992. Gas is additional.\n\nSlippage tolerance\n1% \u00b7 default\n2% \u00b7 higher tolerance\n5% \u00b7 higher tolerance\nToken quantity burned\n0.25 FTEST\nGross curve value \u00b7 rounded down\n0.000004749999 ETH\nTotal fee \u00b7 rounded up\n0.000000047499 ETH\nLauncher share\n0.000000023749 ETH\nPlatform share\n0.000000023749 ETH\nNet ETH proceeds\n0.000004702499 ETH\nAverage execution price \u00b7 net after fee\n0.000018809997 ETH/token\nCurrent marginal price \u00b7 before fees\n0.000019 ETH/token\nEndpoint marginal price \u00b7 before fees\n0.000018999995 ETH/token\nMarginal price impact \u00b7 decrease\n0%\nSigned minimum net ETH\n0.000004655474448693 ETH\nQuote timestamp\n2026-10-09T08:32:06.000Z\nSigned deadline \u00b7 quote +300 seconds\n2026-10-09T08:37:06.000Z\n\nMarginal price prices the next tiny unit before fees. Average execution price covers the entire supply interval and includes fees.\n\nTransaction ordering changes supply and output. Buys send the entire ETH budget and return unused ETH; sales burn only the requested tokens and pay net ETH. Gas is separate and can be spent on reverted transactions. ETH\u2019s external value can change.\n\nNo baseline business ownership, revenue, governance, wagering, access or outcome-payout rights; no promised appreciation. Curve sell-back uses current execution value less fees, not an entry-price refund. You can lose ETH after fees and price movement.\n\nRefresh quote and balancesSell with signed limits\n\nLauncher fee recipient\n\n0xf39F...2266\n\nPlatform fee recipient\n\n0xf39F...2266\n\nEarned / claimable (not withdrawable yet): Launcher 0.150000047499 ETH; platform 0.150000047499 ETH. Claimed: 0 ETH.",
+  "responsive": [
+    {
+      "width": 375,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "overflow": false
+    }
+  ],
+  "finalText": "FOUNDRY / REGISTERED LAUNCH\n\nFictional Test Launcher\n\nFTEST \u00b7 Curve-trading local test fixture\n\nIdentity: chain 31337 /\n0xa16E...d2be\n\nIncluded in a canonical L2 block \u00b7 provisional; finality unverified.\n\nCreation block: 4\n\nTransaction: 0xc3d913512e0872ff45887b05e4699d326465e9043d1928da068f8ef8feeece0f\n\nRecheck chain status\nPrice versus outstanding supply\n0 tokens\n1,000,000 tokens\n0.000019 ETH/token at cap\n\nWhite marker: current outstanding supply. Pink area and endpoint: proposed sell interval. The area is gross curve value before fees.\n\nMathematical marginal price curve, not trading history or a forecast.\n\nOutstanding supply\n0 FTEST\nAvailable buy capacity\n1,000,000 FTEST\nCurve Reserve\n<0.000000000001 ETH\nContract ETH balance\n0.400000189999 ETH\nMarginal price\n0.000001 ETH/token\nMarket cap \u00b7 display valuation\n0 ETH\nYour holdings\n0 FTEST\n\nMarket cap is marginal price \u00d7 outstanding supply. It is not reserve or business funding. Fees are separate liabilities; claims are not available in this release.\n\nLOCAL TEST ONLY \u00b7 CURVE TRADING\n\nBuy\nSell\nSell FTEST\nToken quantity to sell\n\nWallet ETH: 9,999.596276717375. Gas is additional.\n\nSlippage tolerance\n1% \u00b7 default\n2% \u00b7 higher tolerance\n5% \u00b7 higher tolerance\n\nMarginal price prices the next tiny unit before fees. Average execution price covers the entire supply interval and includes fees.\n\nTransaction ordering changes supply and output. Buys send the entire ETH budget and return unused ETH; sales burn only the requested tokens and pay net ETH. Gas is separate and can be spent on reverted transactions. ETH\u2019s external value can change.\n\nNo baseline business ownership, revenue, governance, wagering, access or outcome-payout rights; no promised appreciation. Curve sell-back uses current execution value less fees, not an entry-price refund. You can lose ETH after fees and price movement.\n\nInsufficient token holdings for this sale.\n\nRefresh quote and balancesSell with signed limits\n\nSell included in a canonical block \u00b7 finality unverified. Holdings and available capacity refreshed.\n\nTransaction: 0x98b14ae758fd2d91b94874ef33bf5dac76570d7c431a392e659728fde3c7aeeb\n\nLauncher fee recipient\n\n0xf39F...2266\n\nPlatform fee recipient\n\n0xf39F...2266\n\nEarned / claimable (not withdrawable yet): Launcher 0.200000094999 ETH; platform 0.200000094999 ETH. Claimed: 0 ETH.\n\nTrading activity\nAction\tTokens\tETH\tTransaction\nActivity indexing is not available in this release. Holdings and accounting come from contract reads.\nOne permanent preset.\nReserve asset\nETH\nOutstanding supply cap\n1,000,000 tokens\nStarting marginal price\n0.000001 ETH / token\nLinear slope\n0.000000000018 ETH / token per token\nTotal trading fee\n1% of gross curve value\nFee recipients\nNominal 0.5% Launcher / 0.5% platform\n\nInteger rounding: fee rounds up; Launcher receives half rounded down, platform receives the remainder. Reserve backing is separate from fees and is never business funding.\n\nLocal curve-trading test fixture. Supply starts at zero with no free allocation. Buys mint funded tokens. Sales burn the requested quantity and pay current net curve value; fees and price movement can cause loss. Fee claims are unavailable in this release. No real funds or funded beta. The deployment is immutable.\n\nNo baseline business ownership, revenue, governance, redemption or prediction-market outcome-payout rights. Additional benefits: none."
+}

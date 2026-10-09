@@ -1,4 +1,10 @@
-export function LauncherEconomics({ trading = false }: { trading?: boolean }) {
+export function LauncherEconomics({
+  trading = false,
+  supportsSell = false,
+}: {
+  trading?: boolean;
+  supportsSell?: boolean;
+}) {
   return (
     <section className="economics" aria-label="Immutable economics">
       <h2>One permanent preset.</h2>
@@ -35,9 +41,12 @@ export function LauncherEconomics({ trading = false }: { trading?: boolean }) {
       <p>
         {trading ? (
           <>
-            <strong>Local budget-buy test fixture.</strong> Supply starts at zero with no free allocation. Buys mint
-            funded tokens. Sell-back and fee claims are unavailable in this release. No real funds or funded beta. The
-            deployment is immutable.
+            <strong>Local curve-trading test fixture.</strong> Supply starts at zero with no free allocation. Buys mint
+            funded tokens.{" "}
+            {supportsSell
+              ? "Sales burn the requested quantity and pay current net curve value; fees and price movement can cause loss."
+              : "This older token has no sell-back."}{" "}
+            Fee claims are unavailable in this release. No real funds or funded beta. The deployment is immutable.
           </>
         ) : (
           <>

@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "mode": "minimum",
+      "hash": "0xa3f9c82cddc4ca2286617e8301a097b9dea12b1cf2c3d7cfdcf0fc334bc49dea",
+      "receiptStatus": "0x0",
+      "baseline": {
+        "supply": "700000000000000000000000",
+        "eth": "5658900189999977512",
+        "holdings": "700000000000000000000000"
+      },
+      "after": {
+        "supply": "700000000000000000000000",
+        "eth": "5658900189999977512",
+        "holdings": "700000000000000000000000"
+      },
+      "competingHash": "0x8e66dd42ae2151d156e69ab3eb91bb3ce9c89d02008c7c2d66c278e3f44a7c6f"
+    },
+    {
+      "mode": "deadline",
+      "hash": "0xbee3004f749ba7fb93b5cf4ebdf988ec01e58444eb876535c651f1753bb1a453",
+      "receiptStatus": "0x0",
+      "baseline": {
+        "supply": "700000000000000000000000",
+        "eth": "5658900189999977512",
+        "holdings": "700000000000000000000000"
+      },
+      "after": {
+        "supply": "700000000000000000000000",
+        "eth": "5658900189999977512",
+        "holdings": "700000000000000000000000"
+      }
+    },
+    {
+      "mode": "fresh retry succeeds",
+      "after": {
+        "supply": "600000000000000000000000",
+        "eth": "4401600189999977512",
+        "holdings": "600000000000000000000000"
+      }
+    }
+  ],
+  "disconnectedBlocked": true
+}
