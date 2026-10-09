@@ -28,6 +28,8 @@ type Snapshot = {
   launcherFee: bigint;
   platformFee: bigint;
 };
+// ETH-only input and quote-block balance deliberately bypass EtherInput/Balance;
+// see the narrow Scaffold UI exception in docs/implementation/issue-34-budget-buy.md.
 // Display rounded values with an exact integer amount available in the title. No float enters trade math.
 function Amount({ value, decimals = 18 }: { value: bigint; decimals?: number }) {
   const exact = formatUnits(value, decimals);
