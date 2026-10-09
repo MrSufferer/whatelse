@@ -26,7 +26,7 @@ The ticket distinguishes current/endpoint marginal prices from fee-inclusive ave
 
 ## Narrow Scaffold UI exception
 
-`launcher-token/AGENTS.md` ordinarily requires `@scaffold-ui/components` for `EtherInput` and `Balance`. For this ticket's ETH-budget input and quote-bound wallet balance, the accepted specification's exact 18-decimal integer values and coherent quote/accounting snapshot take precedence. This exception is limited to `LauncherBuy`; address displays still use Scaffold `Address`, and submissions still use Scaffold `useTransactor`.
+`launcher-token/AGENTS.md` ordinarily requires `@scaffold-ui/components` for `EtherInput` and `Balance`. For this ticket's ETH-budget input and quote-bound wallet balance, the accepted specification's exact 18-decimal integer values and coherent quote/accounting snapshot take precedence. This exception is limited to `LauncherBuy` (renamed `LauncherTrade` in issue 35); address displays still use Scaffold `Address`, and submissions still use Scaffold `useTransactor`.
 
 The installed `@scaffold-ui/components` 0.1.12 `dist/esm/Input/EtherInput.js` always calls `useEtherInput`, exposes an ETH/USD toggle, and disables the input while native-currency pricing loads. Its installed hook (`@scaffold-ui/hooks/dist/esm/useEtherInput.js`) fetches Mainnet native-currency pricing and uses `parseFloat` for ETH/USD conversion. That introduces an unrelated remote price dependency and a floating-point conversion path into this local, exact ETH-only budget form. The replacement is a labeled native text input with decimal keyboard, explicit 18-decimal validation and `parseEther` to bigint; it performs no USD conversion.
 
