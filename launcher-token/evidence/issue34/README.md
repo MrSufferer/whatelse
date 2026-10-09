@@ -6,7 +6,7 @@ Observed on ephemeral Anvil chain 31337 with a fresh factory at `0x5fbdb2315678a
 
 The minimum race executes a real 1 ETH competing buy between simulation and wallet send. The deadline race advances local chain time by 301 seconds at the same boundary. Both buyer receipts have status zero and leave supply and contract ETH unchanged from the intervening baseline. Reverted transactions still spend gas. The successful 11 ETH budget purchase reaches the cap and refunds 1.909999999999999997 ETH; wallet delta equals actual charge plus receipt gas. Further buys are disabled.
 
-The guard run covers unaffordable 1 wei / quote failure, insufficient balance, wrong chain without signing, explicit higher tolerance and user cancellation retaining the input. Screenshots at 375, 768 and 1280 pixels have no horizontal overflow and were visually inspected. Expected cancelled/reverted transaction logging produces browser console errors; these runs do not claim an error-free console.
+The guard run covers unaffordable 1 wei / quote failure, insufficient balance, wrong chain without signing, disconnected-wallet blocking, explicit higher tolerance and user cancellation retaining the input. Screenshots at 375, 768 and 1280 pixels have no horizontal overflow and were visually inspected. Expected cancelled/reverted transaction logging produces browser console errors; these runs do not claim an error-free console.
 
 ## Harness replay
 

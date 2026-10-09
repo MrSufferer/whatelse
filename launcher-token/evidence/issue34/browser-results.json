@@ -60,5 +60,9 @@
         "overflow": false
       }
     ]
+  },
+  "disconnectedWallet": {
+    "disconnectedDisabled": true,
+    "notice": "Connect wallet before buying."
   }
 }
