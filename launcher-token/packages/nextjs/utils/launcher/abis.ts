@@ -608,6 +608,19 @@ export const launcherTokenAbi = [
   },
   {
     type: "function",
+    name: "TRADING_VERSION",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "allowance",
     inputs: [
       {
@@ -675,7 +688,68 @@ export const launcherTokenAbi = [
   },
   {
     type: "function",
+    name: "buy",
+    inputs: [
+      {
+        name: "minimumTokens",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "deadline",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "tokens",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+  },
+  {
+    type: "function",
+    name: "buyCost",
+    inputs: [
+      {
+        name: "quantity",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "gross",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "fee",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "cap",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "curveReserve",
     inputs: [],
     outputs: [
       {
@@ -714,6 +788,19 @@ export const launcherTokenAbi = [
   },
   {
     type: "function",
+    name: "launcherFeesEarned",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "launcherRecipient",
     inputs: [],
     outputs: [
@@ -721,6 +808,19 @@ export const launcherTokenAbi = [
         name: "",
         type: "address",
         internalType: "address",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "marginalPrice",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "view",
@@ -740,6 +840,19 @@ export const launcherTokenAbi = [
   },
   {
     type: "function",
+    name: "platformFeesEarned",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "platformRecipient",
     inputs: [],
     outputs: [
@@ -747,6 +860,67 @@ export const launcherTokenAbi = [
         name: "",
         type: "address",
         internalType: "address",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "quoteBuy",
+    inputs: [
+      {
+        name: "budget",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "q",
+        type: "tuple",
+        internalType: "struct LauncherToken.BuyQuote",
+        components: [
+          {
+            name: "tokens",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "gross",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "fee",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "launcherFee",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "platformFee",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "refund",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "supply",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "timestamp",
+            type: "uint256",
+            internalType: "uint256",
+          },
+        ],
       },
     ],
     stateMutability: "view",
@@ -857,6 +1031,55 @@ export const launcherTokenAbi = [
   },
   {
     type: "event",
+    name: "Bought",
+    inputs: [
+      {
+        name: "buyer",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "tokens",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "gross",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "launcherFee",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "platformFee",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "refund",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "supply",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
     name: "Transfer",
     inputs: [
       {
@@ -879,6 +1102,11 @@ export const launcherTokenAbi = [
       },
     ],
     anonymous: false,
+  },
+  {
+    type: "error",
+    name: "DeadlineExpired",
+    inputs: [],
   },
   {
     type: "error",
@@ -992,5 +1220,30 @@ export const launcherTokenAbi = [
         internalType: "address",
       },
     ],
+  },
+  {
+    type: "error",
+    name: "MinimumOutputNotMet",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "ReentrancyGuardReentrantCall",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "RefundFailed",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "SupplyCapReached",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "ZeroQuantity",
+    inputs: [],
   },
 ] as const;

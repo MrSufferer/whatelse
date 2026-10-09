@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Address } from "@scaffold-ui/components";
 import { decodeEventLog, formatUnits, isAddress, isHash } from "viem";
 import { usePublicClient } from "wagmi";
+import { LauncherBuy } from "~~/components/LauncherBuy";
 import { LauncherChart } from "~~/components/LauncherChart";
 import { LauncherEconomics } from "~~/components/LauncherEconomics";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
@@ -29,6 +30,7 @@ export default function Detail() {
     supply: bigint;
     launcher: `0x${string}`;
     platform: `0x${string}`;
+    trading: boolean;
   }>();
   const [error, setError] = useState("");
   const [finality, setFinality] = useState(
@@ -54,8 +56,17 @@ export default function Detail() {
           read("launcherRecipient"),
           read("platformRecipient"),
         ]);
+        let trading = false;
+        try {
+          trading =
+            (await client.readContract({ address: token, abi: launcherTokenAbi, functionName: "TRADING_VERSION" })) ===
+            1n;
+        } catch {
+          /* Immutable creation-only deployments lack this capability. */
+        }
         if (active)
           setInfo({
+            trading,
             name: name as string,
             symbol: symbol as string,
             supply: supply as bigint,
@@ -151,7 +162,9 @@ export default function Detail() {
         <p role="status">{error || "Reading registered token…"}</p>
       ) : (
         <>
-          <p className="lead">{info.symbol} · Creation-only fictional test fixture</p>
+          <p className="lead">
+            {info.symbol} · {info.trading ? "Budget-buy local test fixture" : "Creation-only fictional test fixture"}
+          </p>
           <div className="token-identity">
             Identity: chain {network.id} / <Address address={token} />
           </div>
@@ -178,36 +191,46 @@ export default function Detail() {
           <button className="btn" onClick={() => setRetry(n => n + 1)}>
             Recheck chain status
           </button>
-          <div className="launcher-spread">
-            <section>
-              <LauncherChart chainId={network.id} address={params.address} name={info.name} symbol={info.symbol} />
-              <dl className="token-stats">
-                <div>
-                  <dt>Outstanding supply</dt>
-                  <dd>{formatUnits(info.supply, 18)}</dd>
-                </div>
-                <div>
-                  <dt>Curve reserve</dt>
-                  <dd>0 ETH</dd>
-                </div>
-                <div>
-                  <dt>Market cap</dt>
-                  <dd>0 ETH</dd>
-                </div>
-              </dl>
-            </section>
-            <aside className="launch-form">
-              <h2>Trading unavailable</h2>
-              <p>
-                This creation-only token has no mint, buy, sell or fee-claim functions. It cannot be upgraded. A later
-                trading release needs a new reviewed deployment.
-              </p>
-              <p>Launcher fee recipient</p>
-              <Address address={info.launcher} />
-              <p>Platform fee recipient</p>
-              <Address address={info.platform} />
-            </aside>
-          </div>
+          {info.trading && token ? (
+            <LauncherBuy
+              token={token}
+              name={info.name}
+              symbol={info.symbol}
+              launcher={info.launcher}
+              platform={info.platform}
+            />
+          ) : (
+            <div className="launcher-spread">
+              <section>
+                <LauncherChart chainId={network.id} address={params.address} name={info.name} symbol={info.symbol} />
+                <dl className="token-stats">
+                  <div>
+                    <dt>Outstanding supply</dt>
+                    <dd>{formatUnits(info.supply, 18)}</dd>
+                  </div>
+                  <div>
+                    <dt>Curve reserve</dt>
+                    <dd>0 ETH</dd>
+                  </div>
+                  <div>
+                    <dt>Market cap</dt>
+                    <dd>0 ETH</dd>
+                  </div>
+                </dl>
+              </section>
+              <aside className="launch-form">
+                <h2>Trading unavailable</h2>
+                <p>
+                  This creation-only token has no mint, buy, sell or fee-claim functions. It cannot be upgraded. A later
+                  trading release needs a new reviewed deployment.
+                </p>
+                <p>Launcher fee recipient</p>
+                <Address address={info.launcher} />
+                <p>Platform fee recipient</p>
+                <Address address={info.platform} />
+              </aside>
+            </div>
+          )}
           <section className="activity">
             <h2>Trading activity</h2>
             <table className="table">
@@ -221,12 +244,16 @@ export default function Detail() {
               </thead>
               <tbody>
                 <tr>
-                  <td colSpan={4}>No trades. Trading is unavailable for this fixture.</td>
+                  <td colSpan={4}>
+                    {info.trading
+                      ? "Activity indexing is not available in this release. Holdings and accounting come from contract reads."
+                      : "No trades. Trading is unavailable for this fixture."}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </section>
-          <LauncherEconomics />
+          <LauncherEconomics trading={info.trading} />
         </>
       )}
       {error && (
