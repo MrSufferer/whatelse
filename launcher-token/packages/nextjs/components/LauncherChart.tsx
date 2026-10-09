@@ -1,19 +1,52 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { IChartApi } from "lightweight-charts";
+import type { CandlestickData, IChartApi } from "lightweight-charts";
 
-export function LauncherChart({
-  chainId,
-  address,
-  name,
-  symbol,
-}: {
+type LauncherChartProps = {
   chainId: number;
   address: string;
   name: string;
   symbol: string;
-}) {
+  candles?: CandlestickData[];
+};
+
+export function LauncherChart(props: LauncherChartProps) {
+  if (!props.candles?.length)
+    return (
+      <section aria-label={`${props.symbol} bonding curve placeholder`}>
+        <h2>Permanent linear preset</h2>
+        <svg
+          className="curve"
+          role="img"
+          aria-label="Mathematical preset: marginal price rises linearly from 0.000001 ETH at zero supply to 0.000019 ETH at one million tokens"
+          viewBox="0 0 600 260"
+        >
+          <path d="M50 20V220H580" fill="none" stroke="currentColor" />
+          <path d="M50 210L570 30" fill="none" stroke="var(--launcher-mint)" strokeWidth="3" />
+          <text x="55" y="245">
+            0 tokens
+          </text>
+          <text x="420" y="245">
+            1,000,000 tokens
+          </text>
+          <text x="60" y="30">
+            Marginal price / supply
+          </text>
+        </svg>
+        <p>No trades yet. Showing the mathematical price curve, not trading history or a forecast.</p>
+      </section>
+    );
+  return <PriceHistoryChart {...props} candles={props.candles} />;
+}
+
+function PriceHistoryChart({
+  chainId,
+  address,
+  name,
+  symbol,
+  candles,
+}: LauncherChartProps & { candles: CandlestickData[] }) {
   const container = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [attempt, setAttempt] = useState(0);
@@ -48,8 +81,7 @@ export function LauncherChart({
           wickDownColor: styles.getPropertyValue("--launcher-pink").trim(),
           priceFormat: { type: "price", precision: 12, minMove: 0.000000000001 },
         });
-        // This immutable creation-only token cannot trade. Supply and preset prices are not OHLC data.
-        series.setData([]);
+        series.setData(candles);
         setStatus("ready");
       })
       .catch(() => {
@@ -61,7 +93,7 @@ export function LauncherChart({
       active = false;
       chart?.remove();
     };
-  }, [chainId, address, name, symbol, attempt]);
+  }, [chainId, address, name, symbol, candles, attempt]);
 
   return (
     <section aria-label={`${symbol} trading chart`}>
@@ -73,7 +105,6 @@ export function LauncherChart({
           aria-label={`${name} price history in ETH`}
           aria-busy={status === "loading"}
         />
-        {status === "ready" && <div className="launcher-chart-empty">No trades yet</div>}
         {status !== "ready" && (
           <div className="launcher-chart-status" role={status === "error" ? "alert" : "status"}>
             {status === "loading" ? (
@@ -89,7 +120,6 @@ export function LauncherChart({
           </div>
         )}
       </div>
-      <p>No trades yet. This creation-only token has no trading history.</p>
       <p className="text-sm">
         TradingView Lightweight Charts™ · Copyright © 2025{" "}
         <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">

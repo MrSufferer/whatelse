@@ -300,13 +300,14 @@ dd {
   padding: 1rem;
   text-align: center;
 }
-.launcher-chart-empty {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--launcher-muted);
-  pointer-events: none;
+.curve {
+  width: 100%;
+  height: auto;
+  background: var(--launcher-surface);
+}
+.curve text {
+  fill: var(--launcher-muted);
+  font: 12px monospace;
 }
 .token-stats {
   display: flex;

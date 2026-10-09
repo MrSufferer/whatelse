@@ -18,7 +18,7 @@ import { factoryAddress, fixtureName, fixtureSymbol, proposalId, revision } from
 import { operatorFactoryBytecode } from "~~/utils/launcher/operatorBytecode";
 
 const OPERATOR = "0xeD37FD0d6F0f69236E7472B36796e133D20EcC32" as const;
-type Step = "deploy" | "approve" | "review";
+type Step = "deploy" | "approve" | "review" | "reject";
 type Preview = {
   step: Step;
   account: AddressType;
@@ -96,8 +96,10 @@ export default function OperatorPage() {
                   fixtureSymbol,
                   revision,
                   OPERATOR,
-                  true,
-                  "Reviewed fictional fixture; no additional benefits",
+                  step === "review",
+                  step === "review"
+                    ? "Reviewed fictional fixture; no additional benefits"
+                    : "Rejected fictional fixture for the manual rejection walkthrough",
                 ],
               });
       const fees = await client.estimateFeesPerGas();
@@ -197,6 +199,14 @@ export default function OperatorPage() {
         </p>
         <button className="btn" disabled={!eligible || busy || !isAddress(factory)} onClick={() => prepare("review")}>
           Prepare proposal review
+        </button>
+        <h2>4. Rejected-proposal walkthrough</h2>
+        <p>
+          Use a fresh factory with an approved launcher and an unused proposal. Reject the proposal before creation; an
+          already-created proposal cannot be reviewed again.
+        </p>
+        <button className="btn" disabled={!eligible || busy || !isAddress(factory)} onClick={() => prepare("reject")}>
+          Prepare proposal rejection
         </button>
       </section>
       {error && <p role="alert">{error}</p>}
