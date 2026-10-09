@@ -1,0 +1,33 @@
+async page=>{
+ const buy=page.getByRole('button',{name:'Buy with signed limits',exact:true});
+ const budget=page.getByLabel('ETH budget including fees');
+ const sends=()=>page.evaluate(()=>window.__issue32Wallet.state.requests.filter(x=>x.method==='eth_sendTransaction').length);
+ const baseline=await sends();
+ await budget.fill('0.000000000000000001');
+ await page.getByText(/Quote unavailable/).waitFor();
+ if(!await buy.isDisabled())throw Error('unaffordable tiny buy enabled');
+ await budget.fill('10001');
+ await page.getByText('Insufficient ETH balance for this budget. Leave ETH for gas.').waitFor();
+ if(!await buy.isDisabled())throw Error('overbalance buy enabled');
+ await budget.fill('0.01');
+ await buy.waitFor({state:'visible'});
+ await page.waitForFunction(()=>!Array.from(document.querySelectorAll('button')).find(e=>e.textContent==='Buy with signed limits').disabled);
+ await page.evaluate(()=>window.__issue32Wallet.setChain('0x1'));
+ await page.getByText('Switch wallet to Foundry.').waitFor();
+ if(!await buy.isDisabled())throw Error('wrong-chain buy enabled');
+ await page.evaluate(()=>window.__issue32Wallet.setChain('0x7a69'));
+ await page.waitForFunction(()=>!Array.from(document.querySelectorAll('button')).find(e=>e.textContent==='Buy with signed limits').disabled);
+ if(await sends()!==baseline)throw Error('guard prompted transaction');
+ const minimum=await page.getByTestId('minimum-output').innerText();
+ await page.getByLabel('Slippage tolerance').selectOption('200');
+ await page.getByText('You explicitly selected higher tolerance. Fewer tokens may execute.').waitFor();
+ if(await page.getByTestId('minimum-output').innerText()===minimum)throw Error('higher tolerance did not change minimum');
+ await page.getByLabel('Slippage tolerance').selectOption('100');
+ await page.evaluate(()=>window.__issue32Wallet.rejectNextTransaction());
+ await buy.click();
+ await page.getByText(/Purchase unsuccessful:/).first().waitFor();
+ if(await budget.inputValue()!=='0.01')throw Error('cancellation lost budget');
+ const result={tinyBudgetBlocked:true,balanceBlocked:true,wrongChainBlocked:true,noGuardSigningRequests:true,higherToleranceExplicit:true,rejectionRetainsBudget:true};
+ await page.evaluate(result => window.issue34GuardResult=result,result);
+ return result;
+}

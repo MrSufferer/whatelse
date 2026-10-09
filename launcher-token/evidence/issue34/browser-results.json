@@ -1,0 +1,64 @@
+{
+  "guards": {
+    "tinyBudgetBlocked": true,
+    "balanceBlocked": true,
+    "wrongChainBlocked": true,
+    "noGuardSigningRequests": true,
+    "higherToleranceExplicit": true,
+    "rejectionRetainsBudget": true
+  },
+  "races": [
+    {
+      "mode": "minimum",
+      "hash": "0x54101d3d539e3b5a951b9e1fdfa1cb8d37926ede6f642c541a449e0aadccef4a",
+      "status": "0x0",
+      "block": "0xc",
+      "baseline": {
+        "mode": "minimum",
+        "raceHash": "0xdefac548a7f56e09ff65a1e6dd155c137a66ef5becb99062149c3893b44697ac",
+        "supply": "0x000000000000000000000000000000000000000000003bcb9dfe3190f92f24a6",
+        "eth": "0xe043da61724ffff"
+      },
+      "supplyAndEthUnchanged": true
+    },
+    {
+      "mode": "deadline",
+      "hash": "0x1ff2cfcab5f6209fd47524afbb12fa647ebce88e298f1d4ed0958894e6317a3a",
+      "status": "0x0",
+      "block": "0xf",
+      "baseline": {
+        "mode": "deadline",
+        "supply": "0x000000000000000000000000000000000000000000003bcb9dfe3190f92f24a6",
+        "eth": "0xe043da61724ffff"
+      },
+      "supplyAndEthUnchanged": true
+    }
+  ],
+  "cap": {
+    "hash": "0x060810be80354a3b629a9b5d6414645fa6871728b3fe16201879e308bd3a510b",
+    "status": "0x1",
+    "supply": "1000000000000000000000000",
+    "holdings": "726772146713507608058120",
+    "contractEth": "10100000000000000002",
+    "charge": "9090000000000000003",
+    "refund": "1909999999999999997",
+    "gas": "16217062824510",
+    "walletDelta": "9090016217062824513",
+    "keyboardSubmission": true,
+    "capDisabled": true,
+    "responsive": [
+      {
+        "width": 375,
+        "overflow": false
+      },
+      {
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "width": 1280,
+        "overflow": false
+      }
+    ]
+  }
+}

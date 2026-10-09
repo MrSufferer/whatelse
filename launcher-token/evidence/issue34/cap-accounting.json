@@ -1,0 +1,22 @@
+{
+  "hash": "0x060810be80354a3b629a9b5d6414645fa6871728b3fe16201879e308bd3a510b",
+  "previousSupply": "282375696127678871446694",
+  "event": {
+    "buyer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "tokens": "717624303872321128553306",
+    "gross": "9000000000000000002",
+    "launcherFee": "45000000000000000",
+    "platformFee": "45000000000000001",
+    "refund": "1909999999999999997",
+    "supply": "1000000000000000000000000"
+  },
+  "state": {
+    "totalSupply": "1000000000000000000000000",
+    "curveReserve": "10000000000000000001",
+    "launcherFeesEarned": "49999999999999999",
+    "platformFeesEarned": "50000000000000002",
+    "eth": "10100000000000000002"
+  },
+  "exactReceiptOracle": true,
+  "accountingIsolated": true
+}

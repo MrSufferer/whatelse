@@ -1,0 +1,84 @@
+{
+  "independentOracle": "docs/research/launcher-curve-simulation.py",
+  "cases": [
+    {
+      "budget": "2",
+      "quote": {
+        "tokens": "999999",
+        "gross": "1",
+        "fee": "1",
+        "launcherFee": "0",
+        "platformFee": "1",
+        "refund": "0",
+        "supply": "0",
+        "timestamp": "1791532936"
+      }
+    },
+    {
+      "budget": "3",
+      "quote": {
+        "tokens": "1999999",
+        "gross": "2",
+        "fee": "1",
+        "launcherFee": "0",
+        "platformFee": "1",
+        "refund": "0",
+        "supply": "0",
+        "timestamp": "1791532936"
+      }
+    },
+    {
+      "budget": "101",
+      "quote": {
+        "tokens": "99999999",
+        "gross": "100",
+        "fee": "1",
+        "launcherFee": "0",
+        "platformFee": "1",
+        "refund": "0",
+        "supply": "0",
+        "timestamp": "1791532936"
+      }
+    },
+    {
+      "budget": "10000000000000000",
+      "quote": {
+        "tokens": "9147842841186479504814",
+        "gross": "9900990099009900",
+        "fee": "99009900990099",
+        "launcherFee": "49504950495049",
+        "platformFee": "49504950495050",
+        "refund": "1",
+        "supply": "0",
+        "timestamp": "1791532936"
+      }
+    },
+    {
+      "budget": "1000000000000000000",
+      "quote": {
+        "tokens": "280744044285414268267898",
+        "gross": "990099009900990099",
+        "fee": "9900990099009901",
+        "launcherFee": "4950495049504950",
+        "platformFee": "4950495049504951",
+        "refund": "0",
+        "supply": "0",
+        "timestamp": "1791532936"
+      }
+    },
+    {
+      "budget": "11000000000000000000",
+      "quote": {
+        "tokens": "1000000000000000000000000",
+        "gross": "10000000000000000000",
+        "fee": "100000000000000000",
+        "launcherFee": "50000000000000000",
+        "platformFee": "50000000000000000",
+        "refund": "900000000000000000",
+        "supply": "0",
+        "timestamp": "1791532936"
+      }
+    }
+  ],
+  "estimatedBuyGas": "285078"
+}
