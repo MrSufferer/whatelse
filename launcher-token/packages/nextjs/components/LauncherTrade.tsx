@@ -29,8 +29,8 @@ type Snapshot = {
   launcherFee: bigint;
   platformFee: bigint;
 };
-// ETH-only input and quote-block balance deliberately bypass EtherInput/Balance;
-// see the narrow Scaffold UI exception in docs/implementation/issue-34-budget-buy.md.
+// Exact ETH/token input and quote-block balance deliberately bypass EtherInput/Balance;
+// see the narrow Scaffold UI exceptions in docs/implementation/issue-35-token-sell.md.
 // Display rounded values with an exact integer amount available in the title. No float enters trade math.
 function Amount({ value, decimals = 18 }: { value: bigint; decimals?: number }) {
   const exact = formatUnits(value, decimals);
@@ -42,7 +42,7 @@ function Amount({ value, decimals = 18 }: { value: bigint; decimals?: number }) 
     </span>
   );
 }
-export function LauncherBuy({
+export function LauncherTrade({
   token,
   name,
   symbol,
@@ -65,7 +65,7 @@ export function LauncherBuy({
   const selling = mode === "sell";
   const [zeroConfirmed, setZeroConfirmed] = useState(false);
   const [sellQuote, setSellQuote] = useState<SellQuote>();
-  const [budget, setBudget] = useState("");
+  const [inputAmount, setInputAmount] = useState("");
   const [slippage, setSlippage] = useState("100");
   const [quote, setQuote] = useState<Quote>();
   const [snapshot, setSnapshot] = useState<Snapshot>();
@@ -75,9 +75,9 @@ export function LauncherBuy({
   const [refresh, setRefresh] = useState(0);
   const [clock, setClock] = useState(0);
   const [hash, setHash] = useState<`0x${string}`>();
-  let budgetWei = 0n;
+  let inputBaseUnits = 0n;
   try {
-    if (/^(\d+)(\.\d{0,18})?$/.test(budget)) budgetWei = parseEther(budget);
+    if (/^(\d+)(\.\d{0,18})?$/.test(inputAmount)) inputBaseUnits = parseEther(inputAmount);
   } catch {}
   const activeQuote = selling ? sellQuote : quote;
   const deadline = activeQuote ? activeQuote.timestamp + 300n : 0n;
@@ -125,7 +125,7 @@ export function LauncherBuy({
           setError("Supply Cap reached. Buying is unavailable.");
           return;
         }
-        if (budget && budgetWei === 0n) {
+        if (inputAmount && inputBaseUnits === 0n) {
           setError(
             selling
               ? "Enter a positive token quantity with at most 18 decimals."
@@ -133,25 +133,25 @@ export function LauncherBuy({
           );
           return;
         }
-        if (selling && budgetWei > holdings && address) {
+        if (selling && inputBaseUnits > holdings && address) {
           setError("Insufficient token holdings for this sale.");
           return;
         }
-        if (budgetWei > 0n && selling) {
+        if (inputBaseUnits > 0n && selling) {
           const q = await client!.readContract({
             address: token,
             abi: launcherTokenAbi,
             functionName: "quoteSell",
-            args: [budgetWei],
+            args: [inputBaseUnits],
             blockNumber,
           });
           if (active) setSellQuote(q);
-        } else if (budgetWei > 0n) {
+        } else if (inputBaseUnits > 0n) {
           const q = await client!.readContract({
             address: token,
             abi: launcherTokenAbi,
             functionName: "quoteBuy",
-            args: [budgetWei],
+            args: [inputBaseUnits],
             blockNumber,
           });
           if (active) setQuote(q);
@@ -164,9 +164,9 @@ export function LauncherBuy({
     return () => {
       active = false;
     };
-  }, [client, token, address, budget, budgetWei, refresh, selling]);
+  }, [client, token, address, inputAmount, inputBaseUnits, refresh, selling]);
   const expired = !!activeQuote && BigInt(clock) > deadline;
-  const balanceError = !!address && !!snapshot && !selling && budgetWei > snapshot.balance;
+  const balanceError = !!address && !!snapshot && !selling && inputBaseUnits > snapshot.balance;
   const ready = !!(
     network.id === 31337 &&
     address &&
@@ -181,9 +181,9 @@ export function LauncherBuy({
     !balanceError &&
     !busy
   );
-  async function buy() {
+  async function submitTrade() {
     if (!ready || !activeQuote || !client || !wallet || !address) return;
-    const signed = { minimum, deadline, budget: budgetWei, selling, zeroConfirmed };
+    const signed = { minimum, deadline, inputBaseUnits, selling, zeroConfirmed };
     const trade = signed.selling ? "Sale" : "Purchase";
     setBusy(true);
     setStatus("Checking signed minimum and deadline…");
@@ -193,7 +193,7 @@ export function LauncherBuy({
             address: token,
             abi: launcherTokenAbi,
             functionName: "sell",
-            args: [signed.budget, signed.minimum, signed.deadline],
+            args: [signed.inputBaseUnits, signed.minimum, signed.deadline],
             account: address,
           })
         : await client.simulateContract({
@@ -201,7 +201,7 @@ export function LauncherBuy({
             abi: launcherTokenAbi,
             functionName: "buy",
             args: [signed.minimum, signed.deadline],
-            value: signed.budget,
+            value: signed.inputBaseUnits,
             account: address,
           });
       if (signed.selling) {
@@ -209,7 +209,7 @@ export function LauncherBuy({
           address: token,
           abi: launcherTokenAbi,
           functionName: "quoteSell",
-          args: [signed.budget],
+          args: [signed.inputBaseUnits],
         });
         if (executionQuote.net === 0n && !signed.zeroConfirmed)
           throw new Error("Current sale proceeds are zero ETH. Refresh and explicitly confirm the zero-proceeds burn.");
@@ -221,7 +221,7 @@ export function LauncherBuy({
       const gasPrice = await client.getGasPrice();
       if (
         (await client.getBalance({ address })) <
-        (signed.selling ? 0n : signed.budget) + (gas * gasPrice * 120n) / 100n
+        (signed.selling ? 0n : signed.inputBaseUnits) + (gas * gasPrice * 120n) / 100n
       )
         throw new Error(
           signed.selling
@@ -243,7 +243,7 @@ export function LauncherBuy({
       const block = await client.getBlock({ blockNumber: receipt.blockNumber });
       if (receipt.status !== "success" || block.hash !== receipt.blockHash)
         throw new Error(`${trade} reverted or orphaned.`);
-      const bought = receipt.logs
+      const verifiedTrade = receipt.logs
         .filter(log => log.address.toLowerCase() === token.toLowerCase())
         .some(log => {
           try {
@@ -252,7 +252,7 @@ export function LauncherBuy({
               return (
                 event.eventName === "Sold" &&
                 event.args.seller.toLowerCase() === address.toLowerCase() &&
-                event.args.tokens === signed.budget &&
+                event.args.tokens === signed.inputBaseUnits &&
                 event.args.net >= signed.minimum
               );
             return (
@@ -264,7 +264,7 @@ export function LauncherBuy({
             return false;
           }
         });
-      if (!bought) throw new Error("Receipt does not verify the signed trade.");
+      if (!verifiedTrade) throw new Error("Receipt does not verify the signed trade.");
       setStatus(
         signed.selling
           ? "Sell included in a canonical block · finality unverified. Holdings and available capacity refreshed."
@@ -364,7 +364,7 @@ export function LauncherBuy({
           <form
             onSubmit={event => {
               event.preventDefault();
-              void buy();
+              void submitTrade();
             }}
             aria-busy={busy}
           >
@@ -378,7 +378,7 @@ export function LauncherBuy({
                   disabled={busy}
                   onClick={() => {
                     setMode("buy");
-                    setBudget("");
+                    setInputAmount("");
                     setStatus("");
                     setHash(undefined);
                   }}
@@ -392,7 +392,7 @@ export function LauncherBuy({
                   disabled={busy}
                   onClick={() => {
                     setMode("sell");
-                    setBudget("");
+                    setInputAmount("");
                     setStatus("");
                     setHash(undefined);
                   }}
@@ -413,8 +413,8 @@ export function LauncherBuy({
               aria-describedby="budget-errors"
               inputMode="decimal"
               autoComplete="off"
-              value={budget}
-              onChange={e => setBudget(e.target.value)}
+              value={inputAmount}
+              onChange={e => setInputAmount(e.target.value)}
               disabled={busy}
             />
             <p>

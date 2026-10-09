@@ -4,9 +4,9 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Address } from "@scaffold-ui/components";
 import { decodeEventLog, formatUnits, isAddress, isHash } from "viem";
 import { usePublicClient } from "wagmi";
-import { LauncherBuy } from "~~/components/LauncherBuy";
 import { LauncherChart } from "~~/components/LauncherChart";
 import { LauncherEconomics } from "~~/components/LauncherEconomics";
+import { LauncherTrade } from "~~/components/LauncherTrade";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { launcherTokenAbi, tokenFactoryAbi } from "~~/utils/launcher/abis";
 import { configured, factoryAddress, network } from "~~/utils/launcher/config";
@@ -204,7 +204,7 @@ export default function Detail() {
             Recheck chain status
           </button>
           {info.trading && token ? (
-            <LauncherBuy
+            <LauncherTrade
               supportsSell={info.supportsSell}
               token={token}
               name={info.name}
